@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.16' );
+define( 'SWIFT_WOO_VERSION', '1.0.17' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -606,6 +606,11 @@ if ( ! function_exists( 'swift_woo_order_button_text' ) ) {
 	}
 }
 add_filter( 'woocommerce_order_button_text', 'swift_woo_order_button_text' );
+
+// Translate Shipping Package Name to Bengali
+add_filter( 'woocommerce_shipping_package_name', function() {
+	return esc_html__( 'ডেলিভারি চার্জ', 'swift-woo' );
+} );
 
 // Translate Add to Cart button text to Bengali
 add_filter( 'woocommerce_product_single_add_to_cart_text', function() {

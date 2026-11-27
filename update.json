@@ -1,8 +1,8 @@
 {
-  "version": "1.0.16",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.16.zip",
+  "version": "1.0.17",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.17.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.16 - Hide in-stock badge cleanly via CSS (100% hook-safe), compact mobile spacing to lift buy buttons & trust box above the fold."
+  "changelog": "Release v1.0.17 - GrihoTools Bengali style checkout review order template with product thumbnail images, Bengali labels, clean 3-field layout, and zero hook alterations."
 }
