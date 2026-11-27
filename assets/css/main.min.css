@@ -1282,3 +1282,125 @@ input.is-invalid {
 	.swift-header__inner { height: 70px; }
 }
 
+/* ==========================================================================
+ * GRIHOTOOLS POPUP / DRAWER CHECKOUT MODAL
+ * ========================================================================== */
+.swift-popup-checkout {
+	display: none;
+	position: fixed;
+	inset: 0;
+	z-index: 999999;
+	align-items: center;
+	justify-content: center;
+}
+.swift-popup-checkout.is-open {
+	display: flex !important;
+}
+body.swift-popup-open {
+	overflow: hidden !important;
+}
+
+.swift-popup-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.65);
+	backdrop-filter: blur(3px);
+	z-index: 1;
+}
+
+.swift-popup-wrapper {
+	position: relative;
+	z-index: 2;
+	width: 100%;
+	max-width: 680px;
+	max-height: 90vh;
+	background: #ffffff;
+	border-radius: 14px;
+	box-shadow: 0 10px 40px rgba(0,0,0,.25);
+	overflow-y: auto;
+	scrollbar-width: thin;
+	margin: 16px;
+	animation: swiftPopupSlideIn .25s ease-out;
+}
+
+@keyframes swiftPopupSlideIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px) scale(0.97);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+.swift-popup-close {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	width: 34px;
+	height: 34px;
+	background: #edf2f7;
+	border: none;
+	border-radius: 50%;
+	font-size: 1rem;
+	font-weight: 700;
+	color: #4a5568;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
+	transition: background .2s, color .2s;
+}
+.swift-popup-close:hover {
+	background: #e2e8f0;
+	color: #1a202c;
+}
+
+.swift-popup-content {
+	padding: 16px;
+}
+.swift-popup-content .swift-checkout-container {
+	margin: 0 !important;
+	padding: 0 !important;
+	max-width: 100% !important;
+}
+.swift-popup-content .swift-checkout-header-banner {
+	padding: 12px 16px;
+	margin-bottom: 16px;
+}
+.swift-popup-content .swift-checkout-title {
+	font-size: 1.15rem;
+}
+.swift-popup-content .swift-checkout-grid {
+	grid-template-columns: 1fr !important;
+	gap: 16px !important;
+}
+.swift-popup-content .swift-checkout-box {
+	padding: 16px;
+}
+
+@media (max-width: 600px) {
+	.swift-popup-checkout {
+		align-items: flex-end !important;
+	}
+	.swift-popup-wrapper {
+		margin: 0 !important;
+		border-radius: 16px 16px 0 0 !important;
+		max-height: 92vh !important;
+		animation: swiftDrawerSlideUp .25s ease-out !important;
+	}
+	@keyframes swiftDrawerSlideUp {
+		from {
+			opacity: 0;
+			transform: translateY(100%);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+}
+
+

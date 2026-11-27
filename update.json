@@ -1,8 +1,8 @@
 {
-  "version": "1.0.14",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.14.zip",
+  "version": "1.0.15",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.15.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.14 - 100% comprehensive audit pass: full hook integrity, 0 unbalanced HTML/CSS tags, 0 PHP errors, 0 hook removals, 100% Pixel & WooCommerce core certified."
+  "changelog": "Release v1.0.15 - Instant GrihoTools-style Popup / Drawer Checkout modal on clicking 'অর্ডার করুন' without leaving page, zero hook alterations, native WooCommerce checkout AJAX & PixelYourSite tracking."
 }

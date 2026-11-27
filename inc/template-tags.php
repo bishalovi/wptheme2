@@ -226,3 +226,32 @@ if ( ! function_exists( 'swift_woo_mobile_sticky_buy_bar' ) ) {
 	}
 }
 add_action( 'woocommerce_after_single_product', 'swift_woo_mobile_sticky_buy_bar', 25 );
+
+/**
+ * GrihoTools-style Popup / Drawer Checkout Modal.
+ * Renders WooCommerce native checkout form with 100% hooks intact.
+ * Hooked cleanly to wp_footer.
+ */
+if ( ! function_exists( 'swift_woo_popup_checkout_modal' ) ) {
+	function swift_woo_popup_checkout_modal() {
+		if ( ! class_exists( 'WooCommerce' ) || is_checkout() || is_order_received_page() ) {
+			return;
+		}
+		?>
+		<div id="swift-popup-checkout" class="swift-popup-checkout" aria-hidden="true" role="dialog" aria-modal="true">
+			<div class="swift-popup-overlay"></div>
+			<div class="swift-popup-wrapper">
+				<button type="button" class="swift-popup-close" aria-label="<?php esc_attr_e( 'বন্ধ করুন', 'swift-woo' ); ?>">✕</button>
+				<div class="swift-popup-content">
+					<?php
+					if ( function_exists( 'wc_get_template' ) && WC()->checkout() ) {
+						wc_get_template( 'checkout/form-checkout.php', array( 'checkout' => WC()->checkout() ) );
+					}
+					?>
+				</div>
+			</div>
+		</div>
+		<?php
+	}
+}
+add_action( 'wp_footer', 'swift_woo_popup_checkout_modal', 30 );
