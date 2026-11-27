@@ -50,6 +50,45 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 				}
 			}
 
+			// 1. Primary: GitHub Tags API (instant, zero 5-minute CDN cache delay)
+			$tags_url = sprintf(
+				'https://api.github.com/repos/%s/%s/tags?per_page=1',
+				rawurlencode( $this->github_username ),
+				rawurlencode( $this->github_repo )
+			);
+
+			$tags_res = wp_remote_get( $tags_url, array(
+				'timeout'    => 10,
+				'user-agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url( '/' ),
+				'sslverify'  => true,
+				'headers'    => array( 'Accept' => 'application/vnd.github.v3+json' ),
+			) );
+
+			if ( ! is_wp_error( $tags_res ) && 200 === wp_remote_retrieve_response_code( $tags_res ) ) {
+				$tags = json_decode( wp_remote_retrieve_body( $tags_res ), true );
+				if ( ! empty( $tags[0]['name'] ) ) {
+					$version = ltrim( sanitize_text_field( $tags[0]['name'] ), 'v' );
+					$data    = array(
+						'version'      => $version,
+						'download_url' => sprintf(
+							'https://github.com/%s/%s/archive/refs/tags/v%s.zip',
+							rawurlencode( $this->github_username ),
+							rawurlencode( $this->github_repo ),
+							$version
+						),
+						'details_url'  => sprintf(
+							'https://github.com/%s/%s/releases/tag/v%s',
+							rawurlencode( $this->github_username ),
+							rawurlencode( $this->github_repo ),
+							$version
+						),
+					);
+					set_transient( $transient_key, $data, 3 * HOUR_IN_SECONDS );
+					return $data;
+				}
+			}
+
+			// 2. Fallback: Raw update.json on GitHub main branch
 			$json_url = sprintf(
 				'https://raw.githubusercontent.com/%s/%s/main/update.json?nocache=%d',
 				rawurlencode( $this->github_username ),
