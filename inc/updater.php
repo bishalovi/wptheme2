@@ -3,7 +3,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Swift Woo - Native GitHub Auto-Updater
- * Integrates quietly with standard WordPress theme updates (no banner notification).
+ * Integrates silently with WordPress core theme updates (Appearance -> Themes & Dashboard -> Updates).
  * Scanner-safe, zero core/hook modifications.
  */
 if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
@@ -18,11 +18,13 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 			$this->theme_slug      = get_template();
 			$this->github_username = sanitize_text_field( $github_username );
 			$this->github_repo     = sanitize_text_field( $github_repo );
-			$this->current_version = SWIFT_WOO_VERSION;
 
-			// Native WordPress Theme Update Transients (silent in Dashboard -> Updates & Appearance -> Themes)
-			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'modify_theme_transient' ), 20 );
-			add_filter( 'site_transient_update_themes', array( $this, 'modify_theme_transient' ), 20 );
+			$theme_obj             = wp_get_theme( $this->theme_slug );
+			$this->current_version = $theme_obj->exists() ? $theme_obj->get( 'Version' ) : SWIFT_WOO_VERSION;
+
+			// Hook early into WordPress Core Theme Update Transients
+			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'on_pre_set_transient' ), 20 );
+			add_filter( 'site_transient_update_themes', array( $this, 'on_get_transient' ), 20 );
 
 			// Theme Details Modal API in WP Admin
 			add_filter( 'themes_api', array( $this, 'theme_popup_details' ), 20, 3 );
@@ -32,11 +34,14 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 		}
 
 		/**
-		 * Fetch latest update info from GitHub raw JSON
+		 * Fetch latest update info from GitHub raw JSON.
+		 *
+		 * @param bool $bypass_cache Whether to bypass local transient cache.
+		 * @return array|false
 		 */
-		public function get_remote_info() {
+		public function get_remote_info( $bypass_cache = false ) {
 			$transient_key = 'swift_woo_update_cache_' . $this->theme_slug;
-			$force_check   = isset( $_GET['force-check'] ) || ( isset( $_GET['action'] ) && 'core-update' === $_GET['action'] );
+			$force_check   = $bypass_cache || isset( $_GET['force-check'] ) || ( isset( $_GET['action'] ) && 'core-update' === $_GET['action'] );
 
 			if ( ! $force_check ) {
 				$cached = get_transient( $transient_key );
@@ -55,7 +60,7 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 			$response = wp_remote_get( $json_url, array(
 				'timeout'    => 10,
 				'user-agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url( '/' ),
-				'sslverify'  => false,
+				'sslverify'  => true,
 			) );
 
 			if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
@@ -67,7 +72,6 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 				return false;
 			}
 
-			// Ensure reliable package archive URL
 			if ( empty( $data['download_url'] ) || false !== strpos( $data['download_url'], 'releases/download' ) ) {
 				$data['download_url'] = sprintf(
 					'https://github.com/%s/%s/archive/refs/tags/v%s.zip',
@@ -82,26 +86,40 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 		}
 
 		/**
-		 * Inject update data into WordPress theme transient
+		 * Fires when WordPress refreshes the update_themes transient (e.g. "Check Again" or WP-Cron).
 		 */
-		public function modify_theme_transient( $transient ) {
+		public function on_pre_set_transient( $transient ) {
+			return $this->inject_update( $transient, true );
+		}
+
+		/**
+		 * Fires when WordPress reads the update_themes transient (e.g. Appearance -> Themes).
+		 */
+		public function on_get_transient( $transient ) {
+			return $this->inject_update( $transient, false );
+		}
+
+		/**
+		 * Inject update data into WordPress theme transient if remote version is newer.
+		 */
+		private function inject_update( $transient, $bypass_cache = false ) {
 			if ( ! is_object( $transient ) ) {
 				$transient = new stdClass();
 			}
 
-			$remote = $this->get_remote_info();
+			$remote = $this->get_remote_info( $bypass_cache );
 			if ( ! $remote || empty( $remote['version'] ) || empty( $remote['download_url'] ) ) {
 				return $transient;
 			}
 
 			if ( version_compare( $remote['version'], $this->current_version, '>' ) ) {
 				$update_entry = array(
-					'theme'       => $this->theme_slug,
-					'new_version' => $remote['version'],
-					'url'         => $remote['details_url'] ?? sprintf( 'https://github.com/%s/%s/releases', $this->github_username, $this->github_repo ),
-					'package'     => $remote['download_url'],
-					'requires'    => '6.3',
-					'requires_php'=> '8.2',
+					'theme'        => $this->theme_slug,
+					'new_version'  => $remote['version'],
+					'url'          => $remote['details_url'] ?? sprintf( 'https://github.com/%s/%s/releases', $this->github_username, $this->github_repo ),
+					'package'      => $remote['download_url'],
+					'requires'     => $remote['requires'] ?? '6.3',
+					'requires_php' => $remote['requires_php'] ?? '8.2',
 				);
 
 				if ( ! isset( $transient->response ) || ! is_array( $transient->response ) ) {
@@ -160,7 +178,7 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 	}
 }
 
-// Initialize updater
+// Initialize immediately on load (after_setup_theme) so filters are registered before WP core _maybe_update_themes()
 if ( ! function_exists( 'swift_woo_init_updater' ) ) {
 	function swift_woo_init_updater() {
 		$github_user = get_theme_mod( 'swift_github_user', 'bishalovi' );
@@ -168,4 +186,4 @@ if ( ! function_exists( 'swift_woo_init_updater' ) ) {
 		new Swift_Woo_Theme_Updater( $github_user, $github_repo );
 	}
 }
-add_action( 'init', 'swift_woo_init_updater' );
+add_action( 'after_setup_theme', 'swift_woo_init_updater' );

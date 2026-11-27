@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.6' );
+define( 'SWIFT_WOO_VERSION', '1.0.7' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
