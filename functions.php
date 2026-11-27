@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.9' );
+define( 'SWIFT_WOO_VERSION', '1.0.10' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -75,7 +75,7 @@ if ( ! function_exists( 'swift_woo_enqueue' ) ) {
 		wp_enqueue_script(
 			'swift-woo-main',
 			SWIFT_WOO_URI . '/assets/js/main.min.js',
-			array(),
+			array( 'jquery' ),
 			SWIFT_WOO_VERSION,
 			array(
 				'in_footer' => true,
@@ -148,9 +148,10 @@ if ( ! function_exists( 'swift_woo_customizer' ) ) {
 			'label'       => esc_html__( 'WhatsApp Number (e.g. 8801XXXXXXXXX)', 'swift-woo' ),
 			'section'     => 'swift_woo_options',
 			'type'        => 'text',
+			'description' => esc_html__( 'Used for the WhatsApp order button.', 'swift-woo' ),
 		) );
 
-		// WhatsApp Button Show/Hide
+		// WhatsApp Show/Hide
 		$wp_customize->add_setting( 'swift_whatsapp_show', array( 'default' => '1', 'sanitize_callback' => 'absint' ) );
 		$wp_customize->add_control( 'swift_whatsapp_show', array(
 			'label'   => esc_html__( 'Show WhatsApp Order Button', 'swift-woo' ),
@@ -158,43 +159,30 @@ if ( ! function_exists( 'swift_woo_customizer' ) ) {
 			'type'    => 'checkbox',
 		) );
 
-		// Order Button Label
+		// Order Button Text
 		$wp_customize->add_setting( 'swift_order_btn_label', array( 'default' => 'অর্ডার করুন', 'sanitize_callback' => 'sanitize_text_field' ) );
 		$wp_customize->add_control( 'swift_order_btn_label', array(
-			'label'   => esc_html__( '"Order Now" Button Label', 'swift-woo' ),
+			'label'   => esc_html__( 'Order Button Label', 'swift-woo' ),
 			'section' => 'swift_woo_options',
 			'type'    => 'text',
-		) );
-
-		// Cart Button Label
-		$wp_customize->add_setting( 'swift_cart_btn_label', array( 'default' => 'Cart', 'sanitize_callback' => 'sanitize_text_field' ) );
-		$wp_customize->add_control( 'swift_cart_btn_label', array(
-			'label'   => esc_html__( '"Add to Cart" Button Label', 'swift-woo' ),
-			'section' => 'swift_woo_options',
-			'type'    => 'text',
-		) );
-
-		// Footer Copyright
-		$wp_customize->add_setting( 'swift_footer_text', array( 'default' => '', 'sanitize_callback' => 'wp_kses_post' ) );
-		$wp_customize->add_control( 'swift_footer_text', array(
-			'label'   => esc_html__( 'Footer Copyright Text', 'swift-woo' ),
-			'section' => 'swift_woo_options',
-			'type'    => 'textarea',
 		) );
 	}
 }
 add_action( 'customize_register', 'swift_woo_customizer' );
 
 /* -----------------------------------------------------------------------
- * 5. INLINE PRIMARY COLOR CSS (from Customizer)
+ * 5. OUTPUT DYNAMIC PRIMARY COLOR
  * --------------------------------------------------------------------- */
 if ( ! function_exists( 'swift_woo_inline_css' ) ) {
 	function swift_woo_inline_css() {
-		$color = sanitize_hex_color( get_theme_mod( 'swift_primary_color', '#e53e3e' ) );
-		$css   = "
-			:root { --swift-primary: {$color}; }
-		";
-		wp_add_inline_style( 'swift-woo-style', $css );
+		$primary = get_theme_mod( 'swift_primary_color', '#e53e3e' );
+		if ( $primary !== '#e53e3e' ) {
+			$safe = sanitize_hex_color( $primary );
+			if ( $safe ) {
+				$css = ':root { --swift-primary: ' . $safe . '; }';
+				wp_add_inline_style( 'swift-woo-style', $css );
+			}
+		}
 	}
 }
 add_action( 'wp_enqueue_scripts', 'swift_woo_inline_css' );
@@ -363,7 +351,223 @@ if ( ! function_exists( 'swift_woo_validate_bd_phone' ) ) {
 add_action( 'woocommerce_checkout_process', 'swift_woo_validate_bd_phone' );
 
 /* -----------------------------------------------------------------------
- * 11. INCLUDE MODULES
+ * 11. SEO & OPEN GRAPH META TAGS (Single Product)
+ *     Outputs rich social/CAPI previews — purely additive
+ * --------------------------------------------------------------------- */
+if ( ! function_exists( 'swift_woo_seo_meta' ) ) {
+	function swift_woo_seo_meta() {
+		if ( ! is_product() ) {
+			return;
+		}
+		global $post;
+		$product = wc_get_product( $post->ID );
+		if ( ! $product ) {
+			return;
+		}
+
+		$title       = esc_attr( $product->get_name() );
+		$short_desc  = $product->get_short_description();
+		$description = esc_attr( wp_strip_all_tags( $short_desc ? $short_desc : $product->get_name() ) );
+		$url         = esc_url( get_permalink() );
+		$price       = esc_attr( $product->get_price() );
+		$currency    = esc_attr( get_woocommerce_currency() );
+
+		echo '<meta property="og:type" content="product" />' . "\n";
+		echo '<meta property="og:title" content="' . $title . '" />' . "\n";
+		echo '<meta property="og:description" content="' . $description . '" />' . "\n";
+		echo '<meta property="og:url" content="' . $url . '" />' . "\n";
+
+		$img_id = $product->get_image_id();
+		if ( $img_id ) {
+			$img_url = wp_get_attachment_image_url( $img_id, 'full' );
+			if ( $img_url ) {
+				echo '<meta property="og:image" content="' . esc_url( $img_url ) . '" />' . "\n";
+			}
+		}
+
+		if ( $price ) {
+			echo '<meta property="product:price:amount" content="' . $price . '" />' . "\n";
+			echo '<meta property="product:price:currency" content="' . $currency . '" />' . "\n";
+		}
+		echo '<meta property="product:availability" content="' . ( $product->is_in_stock() ? 'in stock' : 'out of stock' ) . '" />' . "\n";
+		echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
+	}
+}
+add_action( 'wp_head', 'swift_woo_seo_meta', 5 );
+
+/* -----------------------------------------------------------------------
+ * 12. GRIHOTOOLS STYLE CHECKOUT CUSTOMIZATIONS
+ *     Zero unset() calls — 100% hook compliant, PixelYourSite friendly
+ * --------------------------------------------------------------------- */
+if ( ! function_exists( 'swift_woo_customize_checkout_fields' ) ) {
+	function swift_woo_customize_checkout_fields( $fields ) {
+		// Essential fields with Bengali labels & clean placeholders
+		if ( isset( $fields['billing']['billing_first_name'] ) ) {
+			$fields['billing']['billing_first_name']['label']       = __( 'আপনার সম্পূর্ণ নাম', 'swift-woo' );
+			$fields['billing']['billing_first_name']['placeholder'] = __( 'আপনার নাম লিখুন', 'swift-woo' );
+			$fields['billing']['billing_first_name']['class']       = array( 'form-row-wide', 'swift-field-name' );
+			$fields['billing']['billing_first_name']['required']    = true;
+		}
+
+		if ( isset( $fields['billing']['billing_phone'] ) ) {
+			$fields['billing']['billing_phone']['label']       = __( 'মোবাইল নাম্বার', 'swift-woo' );
+			$fields['billing']['billing_phone']['placeholder'] = __( '১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 01XXXXXXXXX)', 'swift-woo' );
+			$fields['billing']['billing_phone']['class']       = array( 'form-row-wide', 'swift-field-phone' );
+			$fields['billing']['billing_phone']['required']    = true;
+		}
+
+		if ( isset( $fields['billing']['billing_address_1'] ) ) {
+			$fields['billing']['billing_address_1']['label']       = __( 'সম্পূর্ণ ডেলিভারি ঠিকানা', 'swift-woo' );
+			$fields['billing']['billing_address_1']['placeholder'] = __( 'বাসা/রোড নং, এলাকা/থানা এবং জেলার নাম লিখুন', 'swift-woo' );
+			$fields['billing']['billing_address_1']['class']       = array( 'form-row-wide', 'swift-field-address' );
+			$fields['billing']['billing_address_1']['required']    = true;
+		}
+
+		// Make non-essential fields optional to ensure seamless submission without unset()
+		$optional_fields = array(
+			'billing_last_name',
+			'billing_company',
+			'billing_country',
+			'billing_city',
+			'billing_state',
+			'billing_postcode',
+			'billing_address_2',
+			'billing_email',
+		);
+		foreach ( $optional_fields as $f ) {
+			if ( isset( $fields['billing'][ $f ] ) ) {
+				$fields['billing'][ $f ]['required'] = false;
+			}
+		}
+
+		if ( isset( $fields['order']['order_comments'] ) ) {
+			$fields['order']['order_comments']['label']       = __( 'অতিরিক্ত তথ্য (ঐচ্ছিক)', 'swift-woo' );
+			$fields['order']['order_comments']['placeholder'] = __( 'ডেলিভারি সংক্রান্ত কোনো বিশেষ নির্দেশনা থাকলে এখানে লিখুন...', 'swift-woo' );
+		}
+
+		return $fields;
+	}
+}
+add_filter( 'woocommerce_checkout_fields', 'swift_woo_customize_checkout_fields', 20 );
+
+// Default country to Bangladesh & default city to Dhaka
+add_filter( 'default_checkout_billing_country', function() { return 'BD'; } );
+add_filter( 'default_checkout_billing_city', function() { return 'Dhaka'; } );
+add_filter( 'default_checkout_billing_state', function() { return 'BD-13'; } );
+
+/* -----------------------------------------------------------------------
+ * 13. DELIVERY AREA SELECTOR (Inside Dhaka 70 / Outside Dhaka 120)
+ * --------------------------------------------------------------------- */
+if ( ! function_exists( 'swift_woo_render_delivery_area_selector' ) ) {
+	function swift_woo_render_delivery_area_selector( $checkout ) {
+		$current_area = WC()->session ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
+		?>
+		<div class="swift-delivery-area-box" id="swift-delivery-area-box">
+			<label class="swift-area-box-title">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+				<span><?php esc_html_e( 'ডেলিভারি এরিয়া বেছে নিন *', 'swift-woo' ); ?></span>
+			</label>
+			<div class="swift-area-options">
+				<label class="swift-area-option <?php echo ( $current_area === 'inside_dhaka' ) ? 'is-selected' : ''; ?>">
+					<input type="radio" name="swift_delivery_area" value="inside_dhaka" <?php checked( $current_area, 'inside_dhaka' ); ?>>
+					<div class="swift-area-option__body">
+						<span class="swift-area-option__name"><?php esc_html_e( 'ঢাকার ভিতরে', 'swift-woo' ); ?></span>
+						<span class="swift-area-option__price">৳ ৭০</span>
+					</div>
+				</label>
+				<label class="swift-area-option <?php echo ( $current_area === 'outside_dhaka' ) ? 'is-selected' : ''; ?>">
+					<input type="radio" name="swift_delivery_area" value="outside_dhaka" <?php checked( $current_area, 'outside_dhaka' ); ?>>
+					<div class="swift-area-option__body">
+						<span class="swift-area-option__name"><?php esc_html_e( 'ঢাকার বাইরে', 'swift-woo' ); ?></span>
+						<span class="swift-area-option__price">৳ ১২০</span>
+					</div>
+				</label>
+			</div>
+		</div>
+		<?php
+	}
+}
+add_action( 'woocommerce_after_checkout_billing_form', 'swift_woo_render_delivery_area_selector', 10 );
+
+// AJAX handler to switch delivery area
+if ( ! function_exists( 'swift_woo_ajax_update_delivery_area' ) ) {
+	function swift_woo_ajax_update_delivery_area() {
+		check_ajax_referer( 'swift_woo_nonce', 'nonce' );
+		$area = isset( $_POST['area'] ) && $_POST['area'] === 'outside_dhaka' ? 'outside_dhaka' : 'inside_dhaka';
+		if ( WC()->session ) {
+			WC()->session->set( 'swift_delivery_area', $area );
+		}
+		wp_send_json_success( array( 'area' => $area ) );
+	}
+}
+add_action( 'wp_ajax_swift_woo_update_delivery_area', 'swift_woo_ajax_update_delivery_area' );
+add_action( 'wp_ajax_nopriv_swift_woo_update_delivery_area', 'swift_woo_ajax_update_delivery_area' );
+
+// Calculate delivery charge fee
+if ( ! function_exists( 'swift_woo_apply_delivery_area_fee' ) ) {
+	function swift_woo_apply_delivery_area_fee( $cart ) {
+		if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+			return;
+		}
+		// If WooCommerce shipping rates are already active, let them handle it
+		$packages = WC()->shipping()->get_packages();
+		if ( ! empty( $packages ) && ! empty( $packages[0]['rates'] ) ) {
+			return;
+		}
+
+		$area  = WC()->session ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
+		$fee   = ( $area === 'outside_dhaka' ) ? 120 : 70;
+		$label = ( $area === 'outside_dhaka' ) ? __( 'ডেলিভারি চার্জ (ঢাকার বাইরে)', 'swift-woo' ) : __( 'ডেলিভারি চার্জ (ঢাকার ভিতরে)', 'swift-woo' );
+		$cart->add_fee( $label, $fee, false );
+	}
+}
+add_action( 'woocommerce_cart_calculate_fees', 'swift_woo_apply_delivery_area_fee' );
+
+// Save delivery area to WooCommerce order meta
+if ( ! function_exists( 'swift_woo_save_delivery_area_order_meta' ) ) {
+	function swift_woo_save_delivery_area_order_meta( $order ) {
+		$area  = WC()->session ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
+		$label = ( $area === 'outside_dhaka' ) ? __( 'ঢাকার বাইরে (৳ ১২০)', 'swift-woo' ) : __( 'ঢাকার ভিতরে (৳ ৭০)', 'swift-woo' );
+		$order->add_meta_data( __( 'ডেলিভারি এরিয়া', 'swift-woo' ), $label, true );
+	}
+}
+add_action( 'woocommerce_checkout_create_order', 'swift_woo_save_delivery_area_order_meta', 10, 1 );
+
+/* -----------------------------------------------------------------------
+ * 14. CHECKOUT ORDER REVIEW THUMBNAIL (GrihoTools style)
+ * --------------------------------------------------------------------- */
+if ( ! function_exists( 'swift_woo_checkout_product_thumbnail' ) ) {
+	function swift_woo_checkout_product_thumbnail( $name, $cart_item, $cart_item_key ) {
+		if ( ! is_checkout() ) {
+			return $name;
+		}
+		$product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
+		if ( ! $product || ! $product->exists() ) {
+			return $name;
+		}
+		$thumb = $product->get_image(
+			array( 56, 56 ),
+			array(
+				'class'   => 'swift-checkout-thumb',
+				'loading' => 'lazy',
+				'alt'     => esc_attr( $product->get_name() ),
+			)
+		);
+		return '<div class="swift-checkout-line-item">' . $thumb . '<div class="swift-checkout-item-details">' . $name . '</div></div>';
+	}
+}
+add_filter( 'woocommerce_cart_item_name', 'swift_woo_checkout_product_thumbnail', 10, 3 );
+
+// Checkout Submit Button Text
+if ( ! function_exists( 'swift_woo_order_button_text' ) ) {
+	function swift_woo_order_button_text() {
+		return esc_html__( 'ক্যাশ অন ডেলিভারিতে অর্ডার করুন', 'swift-woo' );
+	}
+}
+add_filter( 'woocommerce_order_button_text', 'swift_woo_order_button_text' );
+
+/* -----------------------------------------------------------------------
+ * 15. INCLUDE MODULES
  * --------------------------------------------------------------------- */
 require_once SWIFT_WOO_DIR . '/inc/template-tags.php';
 require_once SWIFT_WOO_DIR . '/inc/updater.php';

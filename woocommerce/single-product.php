@@ -1,50 +1,44 @@
 <?php
 defined( 'ABSPATH' ) || exit;
+
 /**
  * Single Product page template.
- * All official WooCommerce single product hooks remain 100% intact.
+ * Calls standard WooCommerce single-product hooks & template parts.
+ * All official WooCommerce hooks remain 100% intact.
  */
-get_header();
+get_header( 'shop' );
+
+/**
+ * Hook: woocommerce_before_main_content.
+ *
+ * @hooked woocommerce_output_content_wrapper - 10 (outputs opening divs for the content)
+ * @hooked woocommerce_breadcrumb - 20
+ */
+do_action( 'woocommerce_before_main_content' );
 ?>
+
 <main id="main" class="swift-main swift-single-product" role="main">
 	<div class="swift-container">
 		<?php
 		while ( have_posts() ) :
 			the_post();
-			global $product;
-			$product = wc_get_product( get_the_ID() );
-
-			// OFFICIAL HOOK - intact
-			do_action( 'woocommerce_before_single_product' );
-
-			if ( post_password_required() ) {
-				echo get_the_password_form(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				return;
-			}
-			?>
-			<div id="product-<?php the_ID(); ?>" <?php wc_product_class( 'swift-single-product__wrapper', $product ); ?>>
-
-				<div class="swift-single-product__gallery">
-					<?php
-					// OFFICIAL HOOK — intact
-					do_action( 'woocommerce_before_single_product_summary' );
-					?>
-				</div>
-
-				<div class="swift-single-product__summary">
-					<?php
-					// OFFICIAL HOOK — intact (outputs title, rating, price, excerpt, add-to-cart form, meta, sharing)
-					do_action( 'woocommerce_single_product_summary' );
-					?>
-				</div>
-
-			</div>
-
-			<?php
-			// OFFICIAL HOOK — intact (tabs, related products, upsells)
-			do_action( 'woocommerce_after_single_product' );
+			wc_get_template_part( 'content', 'single-product' );
 		endwhile;
 		?>
 	</div>
 </main>
-<?php get_footer(); ?>
+
+<?php
+/**
+ * Hook: woocommerce_after_main_content.
+ *
+ * @hooked woocommerce_output_content_wrapper_end - 10 (outputs closing divs for the content)
+ */
+do_action( 'woocommerce_after_main_content' );
+
+/**
+ * Hook: woocommerce_sidebar.
+ */
+do_action( 'woocommerce_sidebar' );
+
+get_footer( 'shop' );
