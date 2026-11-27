@@ -793,61 +793,70 @@ p.stock {
 .swift-extra-color-row label { font-size: .85rem; font-weight: 600; display: block; margin-bottom: 6px; }
 
 /* ==========================================================================
- * CHECKOUT: GRIHOTOOLS.COM HIGH-CONVERTING STYLE (100% HOOK SAFE)
+ * CHECKOUT: GRIHOTOOLS.COM HIGH-CONVERTING STYLE (100% HOOK SAFE, 1-SCREEN COMPACT)
  * ========================================================================== */
 .swift-checkout-container {
-	max-width: 1050px;
-	margin: 20px auto 40px;
-	padding: 0 16px;
+	max-width: 960px;
+	margin: 6px auto 16px;
+	padding: 0 10px;
 }
 
 .swift-checkout-header-banner {
 	background: #fff5f5;
-	border: 1.5px solid #fed7d7;
-	border-radius: var(--swift-radius);
-	padding: 16px 20px;
+	border: 1px solid #fed7d7;
+	border-radius: 8px;
+	padding: 6px 12px;
 	text-align: center;
-	margin-bottom: 24px;
+	margin-bottom: 8px;
 }
 .swift-checkout-title {
-	font-size: 1.25rem;
+	font-size: .98rem;
 	font-weight: 800;
 	color: #9b2c2c;
-	margin: 0 0 4px;
+	margin: 0 0 2px;
+	line-height: 1.25;
 }
 .swift-checkout-subtitle {
-	font-size: .9rem;
+	font-size: .78rem;
 	color: #c53030;
 	font-weight: 600;
 	margin: 0;
+	line-height: 1.2;
 }
 
-/* 2-column checkout grid */
+/* 2-column checkout grid on desktop, 1-screen compact */
 .swift-checkout-grid {
 	display: grid;
 	grid-template-columns: 1fr;
-	gap: 20px;
+	gap: 8px;
+}
+@media (min-width: 768px) {
+	.swift-checkout-grid {
+		grid-template-columns: 1.05fr 0.95fr;
+		gap: 14px;
+		align-items: start;
+	}
 }
 
 .swift-checkout-box {
 	background: #ffffff;
-	border: 1.5px solid var(--swift-border);
-	border-radius: 10px;
-	padding: 20px;
-	box-shadow: 0 1px 4px rgba(0,0,0,.04);
+	border: 1px solid var(--swift-border);
+	border-radius: 8px;
+	padding: 10px 12px;
+	box-shadow: 0 1px 3px rgba(0,0,0,.03);
 }
 
 .swift-box-header {
 	display: flex;
 	align-items: center;
-	gap: 10px;
-	margin-bottom: 16px;
-	padding-bottom: 12px;
-	border-bottom: 1.5px solid var(--swift-border);
+	gap: 6px;
+	margin-bottom: 6px;
+	padding-bottom: 5px;
+	border-bottom: 1px solid var(--swift-border);
 }
 .swift-step-number {
-	width: 26px;
-	height: 26px;
+	width: 18px;
+	height: 18px;
 	background: var(--swift-primary);
 	color: #ffffff;
 	border-radius: 50%;
@@ -855,17 +864,17 @@ p.stock {
 	align-items: center;
 	justify-content: center;
 	font-weight: 700;
-	font-size: .85rem;
+	font-size: .72rem;
 	flex-shrink: 0;
 }
 .swift-box-title {
-	font-size: 1.12rem;
+	font-size: .92rem;
 	font-weight: 700;
 	color: var(--swift-text);
 	margin: 0;
 }
 
-/* CSS-Only Field Hiding — Zero PHP unset(), 100% hook compliant */
+/* CSS-Only Field Hiding - Zero PHP unset(), 100% hook compliant */
 .woocommerce-billing-fields > h3,
 .woocommerce-billing-fields h3,
 .woocommerce-additional-fields,
@@ -883,24 +892,28 @@ p.stock {
 #ship-to-different-address,
 .shipping_address,
 .woocommerce-checkout-review-order-table thead,
-.swift-review-order-table thead {
+.swift-review-order-table thead,
+#shipping_method,
+.woocommerce-shipping-methods,
+.woocommerce-shipping-destination,
+#payment ul.payment_methods {
 	display: none !important;
 }
 
-/* Essential 3 input fields */
+/* Essential 3 input fields - ultra compact */
 .woocommerce-checkout #billing_first_name_field,
 .woocommerce-checkout #billing_phone_field,
 .woocommerce-checkout #billing_address_1_field {
 	width: 100% !important;
 	float: none !important;
-	margin-bottom: 14px !important;
+	margin-bottom: 5px !important;
 }
 
 .woocommerce-checkout label {
 	font-weight: 600;
-	font-size: .9rem;
+	font-size: .78rem;
 	color: #2d3748;
-	margin-bottom: 6px;
+	margin-bottom: 2px;
 	display: block;
 }
 
@@ -908,45 +921,54 @@ p.stock {
 .woocommerce-checkout input[type="tel"],
 .woocommerce-checkout textarea {
 	border: 1.5px solid #cbd5e0 !important;
-	border-radius: var(--swift-radius) !important;
-	padding: 12px 14px !important;
-	font-size: 15px !important;
+	border-radius: 6px !important;
+	padding: 5px 8px !important;
+	font-size: 13.5px !important;
+	height: 36px !important;
 	width: 100% !important;
 	background: #ffffff !important;
 	transition: border-color .2s, box-shadow .2s;
 }
+.woocommerce-checkout textarea {
+	height: 44px !important;
+	min-height: 44px !important;
+}
 .woocommerce-checkout input:focus,
 .woocommerce-checkout textarea:focus {
 	border-color: var(--swift-primary) !important;
-	box-shadow: 0 0 0 3px rgba(229,62,62,.15) !important;
+	box-shadow: 0 0 0 2px rgba(229,62,62,.15) !important;
 	outline: none !important;
 }
 
-/* Delivery Area Box */
+/* Delivery Area Box - ultra compact */
 .swift-delivery-area-box {
-	margin: 16px 0;
+	margin: 6px 0 0;
 }
 .swift-area-box-title {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	font-size: .92rem;
+	gap: 5px;
+	font-size: .8rem;
 	font-weight: 700;
 	color: #2d3748;
-	margin-bottom: 8px;
+	margin-bottom: 4px;
+}
+.swift-area-box-title svg {
+	width: 15px;
+	height: 15px;
 }
 .swift-area-options {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 10px;
+	gap: 6px;
 }
 .swift-area-option {
-	border: 2px solid #e2e8f0;
-	border-radius: var(--swift-radius);
-	padding: 12px;
+	border: 1.5px solid #e2e8f0;
+	border-radius: 6px;
+	padding: 5px 7px;
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: 6px;
 	cursor: pointer;
 	background: #ffffff;
 	transition: border-color .2s, background-color .2s;
@@ -963,95 +985,91 @@ p.stock {
 .swift-area-option__body {
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: 1px;
 }
 .swift-area-option__name {
-	font-size: .88rem;
+	font-size: .78rem;
 	font-weight: 700;
 	color: var(--swift-text);
 }
 .swift-area-option__price {
-	font-size: .95rem;
+	font-size: .82rem;
 	font-weight: 800;
 	color: var(--swift-primary);
 }
 
-/* Order Review Table with Product Thumbnails (GrihoTools style) */
+/* Order Review Table with Product Thumbnails (GrihoTools 1-screen compact) */
 .woocommerce-checkout-review-order-table,
 .swift-review-order-table {
 	width: 100%;
 	border-collapse: collapse;
-	margin-bottom: 16px;
+	margin-bottom: 4px;
 }
-.woocommerce-checkout-review-order-table th,
-.woocommerce-checkout-review-order-table td,
-.swift-review-order-table th,
-.swift-review-order-table td {
-	padding: 10px 0;
-	border-top: 1px solid #edf2f7;
-	vertical-align: middle;
+.swift-cart-item-row td {
+	padding: 4px 0 !important;
+	border-top: 1px solid #f1f5f9 !important;
 }
 .swift-order-product-wrap {
-	display: flex;
-	align-items: center;
-	gap: 12px;
+	display: flex !important;
+	align-items: center !important;
+	gap: 8px !important;
 }
 .swift-order-product-thumb {
-	position: relative;
-	width: 56px;
-	height: 56px;
-	flex-shrink: 0;
-	border-radius: 8px;
-	background: #ffffff;
-	border: 1.5px solid var(--swift-border);
+	position: relative !important;
+	width: 40px !important;
+	height: 40px !important;
+	flex-shrink: 0 !important;
+	border-radius: 6px !important;
+	background: #ffffff !important;
+	border: 1px solid var(--swift-border) !important;
 }
 .swift-order-product-thumb img,
 .swift-order-item__img {
 	width: 100% !important;
 	height: 100% !important;
 	object-fit: cover !important;
-	border-radius: 6px !important;
+	border-radius: 5px !important;
 	display: block !important;
 }
 .swift-order-product-qty {
-	position: absolute;
-	top: -6px;
-	right: -6px;
-	background: var(--swift-primary);
-	color: #ffffff;
-	font-size: .7rem;
-	font-weight: 700;
-	width: 18px;
-	height: 18px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	line-height: 1;
-	box-shadow: 0 1px 4px rgba(0,0,0,.25);
+	position: absolute !important;
+	top: -4px !important;
+	right: -4px !important;
+	background: var(--swift-primary) !important;
+	color: #ffffff !important;
+	font-size: .62rem !important;
+	font-weight: 700 !important;
+	width: 15px !important;
+	height: 15px !important;
+	border-radius: 50% !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	line-height: 1 !important;
+	box-shadow: 0 1px 3px rgba(0,0,0,.2) !important;
 }
 .swift-order-product-details {
-	display: flex;
-	flex-direction: column;
-	gap: 3px;
-	text-align: left;
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 1px !important;
+	text-align: left !important;
 }
 .swift-order-product-name {
-	font-size: .92rem;
-	font-weight: 600;
-	color: var(--swift-text);
-	line-height: 1.35;
+	font-size: .82rem !important;
+	font-weight: 600 !important;
+	color: var(--swift-text) !important;
+	line-height: 1.25 !important;
 }
 .swift-order-product-details .variation {
-	font-size: .8rem;
-	color: var(--swift-text-muted);
-	margin: 0;
+	font-size: .72rem !important;
+	color: var(--swift-text-muted) !important;
+	margin: 0 !important;
 }
 .woocommerce-checkout-review-order-table td.product-total,
 .swift-review-order-table td.product-total {
 	text-align: right;
 	font-weight: 700;
-	font-size: 1rem;
+	font-size: .88rem;
 	color: var(--swift-primary);
 	white-space: nowrap;
 }
@@ -1059,88 +1077,81 @@ p.stock {
 .swift-review-order-table tfoot th {
 	font-weight: 600;
 	color: var(--swift-text-muted);
-	font-size: .92rem;
+	font-size: .78rem;
 	text-align: left;
-	padding: 10px 0;
+	padding: 3px 0;
 	border-top: 1px dashed var(--swift-border);
 }
 .woocommerce-checkout-review-order-table tfoot td,
 .swift-review-order-table tfoot td {
 	text-align: right;
 	font-weight: 700;
-	font-size: 1rem;
-	padding: 10px 0;
+	font-size: .88rem;
+	padding: 3px 0;
 	border-top: 1px dashed var(--swift-border);
 }
 .woocommerce-checkout-review-order-table tr.shipping th,
 .swift-review-order-table tr.shipping th {
 	font-weight: 600 !important;
 	color: var(--swift-text-muted) !important;
-	font-size: .92rem !important;
+	font-size: .78rem !important;
 	text-align: left !important;
-	padding: 10px 0 !important;
+	padding: 3px 0 !important;
 	border-top: 1px dashed var(--swift-border) !important;
 }
 .woocommerce-checkout-review-order-table tr.shipping td,
 .swift-review-order-table tr.shipping td {
 	text-align: right !important;
 	font-weight: 700 !important;
-	font-size: 1rem !important;
+	font-size: .88rem !important;
 	color: var(--swift-text) !important;
-	padding: 10px 0 !important;
+	padding: 3px 0 !important;
 	border-top: 1px dashed var(--swift-border) !important;
-}
-.woocommerce-checkout-review-order-table tr.shipping ul#shipping_method,
-.swift-review-order-table tr.shipping ul#shipping_method,
-.woocommerce-checkout-review-order-table .woocommerce-shipping-methods,
-.swift-review-order-table .woocommerce-shipping-methods,
-.woocommerce-checkout-review-order-table .woocommerce-shipping-destination {
-	display: none !important;
 }
 .woocommerce-checkout-review-order-table tfoot tr.order-total th,
 .woocommerce-checkout-review-order-table tfoot tr.order-total td,
 .swift-review-order-table tfoot tr.order-total th,
 .swift-review-order-table tfoot tr.order-total td {
-	border-top: 2px solid var(--swift-border) !important;
-	font-size: 1.25rem !important;
+	border-top: 1.5px solid var(--swift-border) !important;
+	font-size: 1.1rem !important;
 	font-weight: 800 !important;
 	color: var(--swift-primary) !important;
-	padding: 14px 0 6px !important;
+	padding: 5px 0 2px !important;
 }
 
-/* Payment & Submit Button */
+/* Payment & Submit Button - ultra compact */
 #payment {
 	background: transparent !important;
 	border: none !important;
 	padding: 0 !important;
-	margin: 16px 0 0 !important;
-}
-#payment ul.payment_methods {
-	border-bottom: none !important;
-	padding: 0 !important;
-	margin: 0 0 14px !important;
+	margin: 5px 0 0 !important;
 }
 #payment div.payment_box {
 	background: #f7fafc !important;
-	border-radius: var(--swift-radius);
-	padding: 10px 14px !important;
-	font-size: .88rem !important;
+	border-radius: 6px;
+	padding: 5px 8px !important;
+	font-size: .78rem !important;
 	color: var(--swift-text-muted);
-	margin-top: 8px !important;
+	margin-top: 3px !important;
 }
 
 #place_order {
 	background: var(--swift-primary) !important;
 	border: none !important;
-	font-size: 1.15rem !important;
-	border-radius: var(--swift-radius) !important;
-	padding: 16px 20px !important;
+	font-size: 1.05rem !important;
+	border-radius: 6px !important;
+	padding: 10px 14px !important;
+	height: 44px !important;
 	font-weight: 800 !important;
 	width: 100% !important;
 	cursor: pointer !important;
-	box-shadow: 0 4px 14px rgba(229,62,62,.3) !important;
+	box-shadow: 0 3px 10px rgba(229,62,62,.25) !important;
 	transition: background .2s !important;
 	line-height: 1.2 !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	margin-top: 6px !important;
 }
 #place_order:hover {
 	background: var(--swift-primary-dark) !important;
@@ -1148,21 +1159,22 @@ p.stock {
 
 .swift-checkout-trust-foot {
 	display: flex;
-	justify-content: space-around;
-	gap: 12px;
-	margin-top: 14px;
-	font-size: .82rem;
+	justify-content: center;
+	gap: 14px;
+	margin-top: 5px;
+	font-size: .72rem;
 	color: var(--swift-text-muted);
 }
 .swift-checkout-trust-foot .swift-trust-item {
 	display: flex;
 	align-items: center;
-	gap: 6px;
+	gap: 4px;
 }
 .swift-checkout-trust-foot .swift-trust-item svg {
 	color: #276749;
+	width: 13px;
+	height: 13px;
 }
-
 /* Phone live validation warning */
 .swift-inline-warning {
 	display: none;
