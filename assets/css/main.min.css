@@ -226,102 +226,148 @@ input { font-size: 16px; } /* iOS no-zoom */
 .swift-bottom-nav__item:focus-visible { outline: 2px solid var(--swift-primary); }
 
 /* ==========================================================================
- * PRODUCTS GRID
+ * PRODUCTS GRID & CARD
  * ========================================================================== */
-.swift-section-title { font-size: 1.2rem; margin-bottom: 16px; padding-top: 20px; }
+.swift-section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; padding-top: 20px; }
 
-/* Override WooCommerce grid for 2-col mobile, 4-col desktop */
+/* Strict 2-col on mobile, 4-col on desktop */
+ul.products,
 ul.products.swift-products-grid {
 	display: grid !important;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 12px;
+	grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+	gap: 12px !important;
 	margin: 0 !important;
 	padding: 0 !important;
+	list-style: none !important;
 }
 
+ul.products li.product,
 ul.products.swift-products-grid li.product {
 	margin: 0 !important;
+	padding: 0 !important;
+	width: 100% !important;
+	float: none !important;
 	background: #fff;
 	border: 1px solid var(--swift-border);
 	border-radius: var(--swift-radius);
 	overflow: hidden;
-	display: flex;
-	flex-direction: column;
+	display: flex !important;
+	flex-direction: column !important;
 	transition: box-shadow .2s;
+	position: relative;
 }
-ul.products.swift-products-grid li.product:hover { box-shadow: var(--swift-shadow); }
+ul.products li.product:hover { box-shadow: var(--swift-shadow); }
 
-/* Product image — fixed 1:1 ratio, NO sale badge */
-ul.products.swift-products-grid li.product .woocommerce-loop-product__link {
+/* Stable Product Image (1:1 Ratio, No Movement/Nora-chora) */
+ul.products li.product .woocommerce-loop-product__link {
 	display: block;
-	aspect-ratio: 1 / 1;
-	overflow: hidden;
-}
-ul.products.swift-products-grid li.product img {
 	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	transition: transform .3s;
+	aspect-ratio: 1 / 1;
+	position: relative;
+	overflow: hidden;
+	background: var(--swift-bg-alt);
 }
-ul.products.swift-products-grid li.product:hover img { transform: scale(1.03); }
+ul.products li.product img,
+ul.products li.product .woocommerce-loop-product__link img {
+	width: 100% !important;
+	height: 100% !important;
+	aspect-ratio: 1 / 1 !important;
+	object-fit: cover !important;
+	display: block !important;
+	margin: 0 !important;
+	transition: none !important; /* No zoom or shake */
+	transform: none !important;
+}
 
-/* HIDE sale badge — CSS only, no PHP hook removed */
-ul.products.swift-products-grid .onsale,
-.woocommerce span.onsale { display: none !important; }
+/* HIDE Sale Badges cleanly via CSS (Zero hook removal) */
+ul.products .onsale,
+.woocommerce span.onsale,
+.onsale { display: none !important; }
 
 /* Title — 2-line clamp */
-ul.products.swift-products-grid .woocommerce-loop-product__title {
-	font-size: .88rem;
-	font-weight: 600;
-	padding: 8px 10px 4px;
-	display: -webkit-box;
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
+ul.products li.product .woocommerce-loop-product__title {
+	font-size: .88rem !important;
+	font-weight: 600 !important;
+	padding: 8px 10px 4px !important;
+	margin: 0 !important;
+	line-height: 1.35 !important;
+	display: -webkit-box !important;
+	-webkit-line-clamp: 2 !important;
+	-webkit-box-orient: vertical !important;
+	overflow: hidden !important;
+	min-height: 2.7em;
+	color: var(--swift-text) !important;
 }
 
 /* Price */
-ul.products.swift-products-grid .price {
-	font-size: .9rem;
-	font-weight: 700;
-	color: var(--swift-primary);
-	padding: 0 10px 8px;
+ul.products li.product .price {
+	font-size: .95rem !important;
+	font-weight: 700 !important;
+	color: var(--swift-primary) !important;
+	padding: 0 10px 10px !important;
+	margin: 0 !important;
+	display: block !important;
 }
-ul.products.swift-products-grid .price del { color: var(--swift-text-muted); font-weight: 400; }
+ul.products li.product .price del { color: var(--swift-text-muted); font-weight: 400; font-size: .85em; }
+ul.products li.product .price ins { text-decoration: none; }
 
-/* Product card buttons — flex: Cart LEFT, Order Now RIGHT */
-ul.products.swift-products-grid li.product .button,
-ul.products.swift-products-grid li.product .swift-buy-now-btn {
-	flex: 1;
-	font-size: .78rem;
-	padding: 7px 4px;
-	border-radius: var(--swift-radius);
-	border: 1.5px solid var(--swift-primary);
-	cursor: pointer;
-	font-weight: 600;
-	transition: background .2s, color .2s;
-	text-align: center;
+/* ==========================================================================
+ * PRODUCT CARD BUTTONS: Left = Cart, Right = Order Now (Flexbox side-by-side)
+ * ========================================================================== */
+ul.products li.product .swift-card-actions {
+	display: flex !important;
+	flex-direction: row !important;
+	gap: 6px !important;
+	padding: 0 8px 10px !important;
+	margin-top: auto !important;
+	width: 100% !important;
+	box-sizing: border-box !important;
 }
-ul.products.swift-products-grid li.product .button {
-	background: #fff;
-	color: var(--swift-primary);
+
+/* Base button reset for card */
+ul.products li.product .swift-card-actions a.button,
+ul.products li.product .swift-card-actions button.button,
+ul.products li.product .swift-card-actions .button,
+ul.products li.product .swift-card-actions .swift-buy-now-btn {
+	flex: 1 1 50% !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	font-size: .78rem !important;
+	font-weight: 700 !important;
+	padding: 8px 4px !important;
+	border-radius: var(--swift-radius) !important;
+	border: 1.5px solid var(--swift-primary) !important;
+	cursor: pointer !important;
+	text-align: center !important;
+	line-height: 1.2 !important;
+	margin: 0 !important;
+	box-sizing: border-box !important;
+	text-decoration: none !important;
+	white-space: nowrap !important;
 }
-ul.products.swift-products-grid li.product .button:hover { background: var(--swift-bg-alt); }
-ul.products.swift-products-grid li.product .swift-buy-now-btn {
-	background: var(--swift-primary);
-	color: #fff;
+
+/* Left button: Cart (White background, Red text) */
+ul.products li.product .swift-card-actions .button.add_to_cart_button,
+ul.products li.product .swift-card-actions a.button {
+	background: #ffffff !important;
+	color: var(--swift-primary) !important;
 }
-ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background: var(--swift-primary-dark); }
-/* Flexbox: Left=Cart, Right=Order Now */
-.swift-card-actions {
-	display: flex;
-	gap: 6px;
-	padding: 0 8px 10px;
-	margin-top: auto;
+ul.products li.product .swift-card-actions a.button:hover {
+	background: var(--swift-bg-alt) !important;
+}
+
+/* Right button: Order Now (Solid Red background, White text) */
+ul.products li.product .swift-card-actions .swift-buy-now-btn {
+	background: var(--swift-primary) !important;
+	color: #ffffff !important;
+}
+ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
+	background: var(--swift-primary-dark) !important;
 }
 
 /* ==========================================================================
- * SINGLE PRODUCT
+ * SINGLE PRODUCT PAGE
  * ========================================================================== */
 .swift-single-product__wrapper {
 	display: grid;
@@ -330,47 +376,81 @@ ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background
 	padding: 20px 0;
 }
 
-/* Summary actions: flex row (Cart LEFT, Order Now RIGHT) */
-.swift-single-product__summary .cart { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-.swift-single-product__summary .single_add_to_cart_button {
-	flex: 1;
-	background: #fff;
-	border: 2px solid var(--swift-primary);
-	color: var(--swift-primary);
-	border-radius: var(--swift-radius);
-	padding: 12px 16px;
-	font-size: 1rem;
-	font-weight: 700;
-	cursor: pointer;
-	transition: .2s;
-}
-.swift-single-product__summary .single_add_to_cart_button:hover { background: var(--swift-bg-alt); }
-.swift-buy-now-btn {
-	flex: 1;
-	background: var(--swift-primary);
-	color: #fff;
-	border: 2px solid var(--swift-primary);
-	border-radius: var(--swift-radius);
-	padding: 12px 16px;
-	font-size: 1rem;
-	font-weight: 700;
-	cursor: pointer;
-	transition: .2s;
-}
-.swift-buy-now-btn:hover { background: var(--swift-primary-dark); }
-.swift-buy-now-btn:focus-visible,
-.single_add_to_cart_button:focus-visible { outline: 3px solid var(--swift-primary); outline-offset: 2px; }
-.swift-buy-now-btn.is-loading { opacity: .7; cursor: not-allowed; }
+/* Single product gallery */
+.swift-single-product__gallery .woocommerce-product-gallery { margin-bottom: 0 !important; }
+.swift-single-product__gallery img { border-radius: var(--swift-radius); width: 100%; height: auto; }
 
-/* Trust Badge */
+/* Single product add-to-cart form flexbox */
+.swift-single-product__summary form.cart {
+	display: flex !important;
+	flex-wrap: wrap !important;
+	gap: 10px !important;
+	align-items: center !important;
+	margin: 16px 0 !important;
+}
+
+/* Quantity input */
+.swift-single-product__summary form.cart .quantity {
+	margin: 0 !important;
+}
+.swift-single-product__summary form.cart .quantity input.qty {
+	border: 1.5px solid var(--swift-border);
+	border-radius: var(--swift-radius);
+	padding: 10px 8px;
+	font-size: 1rem;
+	width: 60px;
+	text-align: center;
+}
+
+/* Left: Add to Cart button */
+.swift-single-product__summary .single_add_to_cart_button {
+	flex: 1 1 auto !important;
+	background: #ffffff !important;
+	border: 2px solid var(--swift-primary) !important;
+	color: var(--swift-primary) !important;
+	border-radius: var(--swift-radius) !important;
+	padding: 12px 18px !important;
+	font-size: 1rem !important;
+	font-weight: 700 !important;
+	cursor: pointer !important;
+	transition: .2s !important;
+	text-align: center !important;
+}
+.swift-single-product__summary .single_add_to_cart_button:hover {
+	background: var(--swift-bg-alt) !important;
+}
+
+/* Right: Order Now button */
+.swift-single-product__summary .swift-buy-now-btn {
+	flex: 1 1 auto !important;
+	background: var(--swift-primary) !important;
+	color: #ffffff !important;
+	border: 2px solid var(--swift-primary) !important;
+	border-radius: var(--swift-radius) !important;
+	padding: 12px 18px !important;
+	font-size: 1rem !important;
+	font-weight: 700 !important;
+	cursor: pointer !important;
+	transition: .2s !important;
+	text-align: center !important;
+}
+.swift-single-product__summary .swift-buy-now-btn:hover {
+	background: var(--swift-primary-dark) !important;
+}
+
+/* Trust Badge (Below buttons) */
 .swift-trust-badge {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	margin-top: 10px;
-	font-size: .88rem;
+	gap: 8px;
+	margin-top: 14px;
+	font-size: .95rem;
 	font-weight: 600;
 	color: #276749;
+	background: #f0fff4;
+	padding: 10px 14px;
+	border-radius: var(--swift-radius);
+	border: 1px solid #c6f6d5;
 }
 
 /* WhatsApp Button */
@@ -388,7 +468,6 @@ ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background
 	transition: background .2s;
 }
 .swift-whatsapp-btn:hover { background: #1da851; }
-.swift-whatsapp-btn:focus-visible { outline: 2px solid #1da851; outline-offset: 2px; }
 
 /* ==========================================================================
  * VARIATION SWATCHES
@@ -415,7 +494,6 @@ ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background
 	outline-offset: 2px;
 }
 .swift-color-swatch.is-disabled { opacity: .4; cursor: not-allowed; }
-.swift-color-swatch:focus-visible { outline: 2px solid var(--swift-primary); outline-offset: 2px; }
 
 .swift-pis-btn {
 	padding: 8px 16px;
@@ -433,19 +511,15 @@ ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background
 	color: var(--swift-primary);
 }
 .swift-pis-btn.is-disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
-.swift-pis-btn:focus-visible { outline: 2px solid var(--swift-primary); outline-offset: 2px; }
 
 .swift-swatch-label { font-size: .85rem; color: var(--swift-text-muted); font-weight: 500; }
-
-/* Extra color rows for multi-pis */
 #swift-multi-color-container { margin-top: 12px; }
 .swift-extra-color-row { margin-bottom: 10px; }
 .swift-extra-color-row label { font-size: .85rem; font-weight: 600; display: block; margin-bottom: 6px; }
 
 /* ==========================================================================
- * CHECKOUT STYLES (COD-friendly, no field removed)
+ * CHECKOUT & THANK YOU
  * ========================================================================== */
-.woocommerce-checkout .woocommerce-billing-fields__field-wrapper { gap: 12px; }
 .woocommerce-checkout input[type="text"],
 .woocommerce-checkout input[type="email"],
 .woocommerce-checkout input[type="tel"],
@@ -454,9 +528,8 @@ ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background
 	border: 1.5px solid var(--swift-border);
 	border-radius: var(--swift-radius);
 	padding: 10px 14px;
-	font-size: 16px; /* iOS no-zoom */
+	font-size: 16px;
 	width: 100%;
-	transition: border-color .2s;
 }
 .woocommerce-checkout input:focus,
 .woocommerce-checkout select:focus,
@@ -470,11 +543,7 @@ ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background
 	padding: 14px !important;
 	font-weight: 700 !important;
 }
-#place_order:focus-visible { outline: 3px solid var(--swift-primary); outline-offset: 2px; }
 
-/* ==========================================================================
- * THANK YOU PAGE
- * ========================================================================== */
 .woocommerce-order { max-width: 640px; margin: 30px auto; }
 .woocommerce-order .woocommerce-thankyou-order-received {
 	background: var(--swift-primary);
@@ -485,30 +554,6 @@ ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background
 	font-weight: 700;
 	margin-bottom: 20px;
 }
-
-/* ==========================================================================
- * EMPTY CART & EMPTY SEARCH
- * ========================================================================== */
-.woocommerce-cart-empty { text-align: center; padding: 40px 20px; }
-.woocommerce-no-products-found { text-align: center; padding: 30px 20px; }
-
-.swift-btn {
-	display: inline-flex;
-	align-items: center;
-	padding: 11px 22px;
-	border-radius: var(--swift-radius);
-	font-weight: 700;
-	font-size: 1rem;
-	cursor: pointer;
-	transition: .2s;
-}
-.swift-btn--primary {
-	background: var(--swift-primary);
-	color: #fff;
-	border: none;
-}
-.swift-btn--primary:hover { background: var(--swift-primary-dark); }
-.swift-btn--primary:focus-visible { outline: 2px solid var(--swift-primary); outline-offset: 2px; }
 
 /* ==========================================================================
  * FOOTER
@@ -522,7 +567,7 @@ ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background
 }
 
 /* ==========================================================================
- * DESKTOP — min-width: 768px
+ * DESKTOP (min-width: 768px)
  * ========================================================================== */
 @media (min-width: 768px) {
 	.swift-menu-toggle { display: none; }
@@ -532,7 +577,11 @@ ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background
 	.swift-mobile-bottom-nav { display: none; }
 	.swift-footer { padding-bottom: 20px; }
 
-	ul.products.swift-products-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+	ul.products,
+	ul.products.swift-products-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+		gap: 16px !important;
+	}
 	.swift-single-product__wrapper { grid-template-columns: 1fr 1fr; gap: 32px; }
 }
 
