@@ -39,11 +39,11 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 	/**
 	 * Hook: woocommerce_after_shop_loop_item.
 	 * @hooked woocommerce_template_loop_product_link_close - 5
+	 * @hooked swift_woo_loop_actions_open - 8
 	 * @hooked woocommerce_template_loop_add_to_cart - 10
-	 * @hooked swift_woo_add_loop_buy_now - 15 (Our Order Now Button)
+	 * @hooked swift_woo_add_loop_buy_now - 15
+	 * @hooked swift_woo_loop_actions_close - 20
 	 */
-	echo '<div class="swift-card-actions">';
 	do_action( 'woocommerce_after_shop_loop_item' );
-	echo '</div>';
 	?>
 </li>

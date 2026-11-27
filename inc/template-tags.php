@@ -54,6 +54,17 @@ if ( ! function_exists( 'swift_woo_add_cod_to_single_form' ) ) {
 add_action( 'woocommerce_after_add_to_cart_form', 'swift_woo_add_cod_to_single_form', 10 );
 
 /**
+ * Wrap loop action buttons AFTER woocommerce_template_loop_product_link_close (priority 5)
+ * so </a> never closes inside .swift-card-actions.
+ */
+if ( ! function_exists( 'swift_woo_loop_actions_open' ) ) {
+	function swift_woo_loop_actions_open() {
+		echo '<div class="swift-card-actions">';
+	}
+}
+add_action( 'woocommerce_after_shop_loop_item', 'swift_woo_loop_actions_open', 8 );
+
+/**
  * Hook Buy Now to Shop/Home product loop cards
  * Zero official hooks modified — purely additive.
  */
@@ -67,6 +78,13 @@ if ( ! function_exists( 'swift_woo_add_loop_buy_now' ) ) {
 	}
 }
 add_action( 'woocommerce_after_shop_loop_item', 'swift_woo_add_loop_buy_now', 15 );
+
+if ( ! function_exists( 'swift_woo_loop_actions_close' ) ) {
+	function swift_woo_loop_actions_close() {
+		echo '</div>';
+	}
+}
+add_action( 'woocommerce_after_shop_loop_item', 'swift_woo_loop_actions_close', 20 );
 
 /**
  * Output WhatsApp order button (Single Product Page only).
