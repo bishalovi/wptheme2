@@ -1,0 +1,30 @@
+/* Swift Woo — WooCommerce specific overrides */
+/* Keeps all official WooCommerce hooks intact — only visual CSS */
+
+/* Hide .onsale badge (CSS only — no PHP hook removed) */
+.woocommerce span.onsale { display: none !important; }
+
+/* Product loop buttons: flex row */
+.woocommerce ul.products li.product .swift-card-actions {
+	display: flex;
+	gap: 6px;
+	padding: 0 8px 10px;
+}
+
+/* WooCommerce image fallback */
+.woocommerce ul.products li.product img[src*="woocommerce-placeholder"] {
+	object-fit: contain;
+	padding: 20px;
+	background: var(--swift-bg-alt);
+}
+
+/* Quantity input */
+.woocommerce .quantity input {
+	border: 1.5px solid var(--swift-border);
+	border-radius: var(--swift-radius);
+	padding: 8px 12px;
+	font-size: 16px;
+}
+
+/* Tabs */
+.woocommerce div.product .woocommerce-tabs .panel { padding: 20px 0; }

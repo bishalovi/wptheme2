@@ -1,0 +1,542 @@
+/* ==========================================================================
+ * Swift Woo — Main Stylesheet
+ * Mobile-first | Pure CSS (no Bootstrap) | WooCommerce compatible
+ * ========================================================================== */
+
+/* --- Font Import (local) --- */
+@import url('fonts.css');
+
+/* --- CSS Custom Properties --- */
+:root {
+	--swift-primary: #e53e3e;
+	--swift-primary-dark: #c53030;
+	--swift-text: #1a202c;
+	--swift-text-muted: #718096;
+	--swift-bg: #ffffff;
+	--swift-bg-alt: #f7fafc;
+	--swift-border: #e2e8f0;
+	--swift-radius: 8px;
+	--swift-shadow: 0 2px 8px rgba(0,0,0,.08);
+	--swift-font: 'Hind Siliguri', 'Inter', sans-serif;
+	--swift-header-h: 60px;
+	--swift-bottom-nav-h: 56px;
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+	margin: 0;
+	font-family: var(--swift-font);
+	color: var(--swift-text);
+	background: var(--swift-bg);
+	overflow-x: clip;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; margin: 0; padding: 0; }
+h1,h2,h3,h4 { margin: 0 0 .5rem; line-height: 1.3; }
+input, button, select, textarea { font-family: inherit; font-size: 1rem; }
+input { font-size: 16px; } /* iOS no-zoom */
+
+/* --- Container --- */
+.swift-container {
+	width: 100%;
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 0 16px;
+}
+
+/* ==========================================================================
+ * ANNOUNCEMENT BAR
+ * ========================================================================== */
+.swift-announcement-bar {
+	background: var(--swift-primary);
+	color: #fff;
+	text-align: center;
+	padding: 6px 16px;
+	font-size: .85rem;
+}
+.swift-announcement-bar p { margin: 0; }
+
+/* ==========================================================================
+ * HEADER
+ * ========================================================================== */
+.swift-header {
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background: #fff;
+	box-shadow: var(--swift-shadow);
+}
+.swift-header__inner {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	height: var(--swift-header-h);
+	padding: 0 16px;
+}
+.swift-header__logo { flex-shrink: 0; }
+.swift-header__logo img { height: 40px; width: auto; }
+.swift-site-title { font-weight: 700; font-size: 1.1rem; color: var(--swift-primary); }
+.swift-header__search { flex: 1; position: relative; }
+.swift-header__cart { flex-shrink: 0; }
+
+/* Search */
+.swift-search-form { display: flex; position: relative; }
+.swift-search-input {
+	width: 100%;
+	border: 1.5px solid var(--swift-border);
+	border-radius: var(--swift-radius);
+	padding: 8px 42px 8px 14px;
+	outline: none;
+	transition: border-color .2s;
+	background: var(--swift-bg-alt);
+}
+.swift-search-input:focus { border-color: var(--swift-primary); }
+.swift-search-submit {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--swift-text-muted);
+	padding: 0;
+	display: flex;
+}
+.swift-search-submit:focus-visible { outline: 2px solid var(--swift-primary); border-radius: 4px; }
+.swift-search-results {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	background: #fff;
+	border: 1px solid var(--swift-border);
+	border-radius: var(--swift-radius);
+	box-shadow: var(--swift-shadow);
+	z-index: 999;
+	max-height: 300px;
+	overflow-y: auto;
+}
+.swift-search-result-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 14px;
+	border-bottom: 1px solid var(--swift-border);
+	transition: background .15s;
+}
+.swift-search-result-item:hover { background: var(--swift-bg-alt); }
+.swift-search-result-item img { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; }
+.swift-search-result-title { flex: 1; font-size: .9rem; }
+.swift-search-result-price { font-weight: 600; color: var(--swift-primary); font-size: .9rem; }
+.swift-search-no-results { padding: 12px 14px; color: var(--swift-text-muted); font-size: .9rem; margin: 0; }
+
+/* Mini Cart */
+.swift-cart-link {
+	position: relative;
+	display: flex;
+	align-items: center;
+	color: var(--swift-text);
+}
+.swift-cart-link:focus-visible { outline: 2px solid var(--swift-primary); border-radius: 4px; }
+.swift-cart-count {
+	position: absolute;
+	top: -8px;
+	right: -10px;
+	background: var(--swift-primary);
+	color: #fff;
+	border-radius: 50%;
+	font-size: .65rem;
+	font-weight: 700;
+	width: 18px;
+	height: 18px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
+/* Mobile hamburger */
+.swift-menu-toggle {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 4px;
+}
+.swift-menu-toggle span {
+	display: block;
+	width: 24px;
+	height: 2px;
+	background: var(--swift-text);
+	border-radius: 2px;
+	transition: .3s;
+}
+.swift-menu-toggle:focus-visible { outline: 2px solid var(--swift-primary); border-radius: 4px; }
+
+/* Primary Nav */
+.swift-primary-nav { display: none; }
+.swift-primary-nav.is-open {
+	display: block;
+	padding: 12px 16px;
+	border-top: 1px solid var(--swift-border);
+}
+.swift-nav-list { display: flex; flex-direction: column; gap: 4px; }
+.swift-nav-list li a {
+	display: block;
+	padding: 8px 4px;
+	font-weight: 500;
+	border-bottom: 1px solid var(--swift-border);
+}
+
+/* ==========================================================================
+ * MOBILE BOTTOM STICKY NAV
+ * ========================================================================== */
+.swift-mobile-bottom-nav {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: var(--swift-bottom-nav-h);
+	background: #fff;
+	border-top: 1px solid var(--swift-border);
+	display: flex;
+	z-index: 999;
+	box-shadow: 0 -2px 8px rgba(0,0,0,.07);
+}
+.swift-bottom-nav__item {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+	font-size: .68rem;
+	color: var(--swift-text-muted);
+	padding: 6px 0;
+	transition: color .2s;
+}
+.swift-bottom-nav__item.active,
+.swift-bottom-nav__item:hover { color: var(--swift-primary); }
+.swift-bottom-nav__item:focus-visible { outline: 2px solid var(--swift-primary); }
+
+/* ==========================================================================
+ * PRODUCTS GRID
+ * ========================================================================== */
+.swift-section-title { font-size: 1.2rem; margin-bottom: 16px; padding-top: 20px; }
+
+/* Override WooCommerce grid for 2-col mobile, 4-col desktop */
+ul.products.swift-products-grid {
+	display: grid !important;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 12px;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+ul.products.swift-products-grid li.product {
+	margin: 0 !important;
+	background: #fff;
+	border: 1px solid var(--swift-border);
+	border-radius: var(--swift-radius);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	transition: box-shadow .2s;
+}
+ul.products.swift-products-grid li.product:hover { box-shadow: var(--swift-shadow); }
+
+/* Product image — fixed 1:1 ratio, NO sale badge */
+ul.products.swift-products-grid li.product .woocommerce-loop-product__link {
+	display: block;
+	aspect-ratio: 1 / 1;
+	overflow: hidden;
+}
+ul.products.swift-products-grid li.product img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform .3s;
+}
+ul.products.swift-products-grid li.product:hover img { transform: scale(1.03); }
+
+/* HIDE sale badge — CSS only, no PHP hook removed */
+ul.products.swift-products-grid .onsale,
+.woocommerce span.onsale { display: none !important; }
+
+/* Title — 2-line clamp */
+ul.products.swift-products-grid .woocommerce-loop-product__title {
+	font-size: .88rem;
+	font-weight: 600;
+	padding: 8px 10px 4px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* Price */
+ul.products.swift-products-grid .price {
+	font-size: .9rem;
+	font-weight: 700;
+	color: var(--swift-primary);
+	padding: 0 10px 8px;
+}
+ul.products.swift-products-grid .price del { color: var(--swift-text-muted); font-weight: 400; }
+
+/* Product card buttons — flex: Cart LEFT, Order Now RIGHT */
+ul.products.swift-products-grid li.product .button,
+ul.products.swift-products-grid li.product .swift-buy-now-btn {
+	flex: 1;
+	font-size: .78rem;
+	padding: 7px 4px;
+	border-radius: var(--swift-radius);
+	border: 1.5px solid var(--swift-primary);
+	cursor: pointer;
+	font-weight: 600;
+	transition: background .2s, color .2s;
+	text-align: center;
+}
+ul.products.swift-products-grid li.product .button {
+	background: #fff;
+	color: var(--swift-primary);
+}
+ul.products.swift-products-grid li.product .button:hover { background: var(--swift-bg-alt); }
+ul.products.swift-products-grid li.product .swift-buy-now-btn {
+	background: var(--swift-primary);
+	color: #fff;
+}
+ul.products.swift-products-grid li.product .swift-buy-now-btn:hover { background: var(--swift-primary-dark); }
+/* Flexbox: Left=Cart, Right=Order Now */
+.swift-card-actions {
+	display: flex;
+	gap: 6px;
+	padding: 0 8px 10px;
+	margin-top: auto;
+}
+
+/* ==========================================================================
+ * SINGLE PRODUCT
+ * ========================================================================== */
+.swift-single-product__wrapper {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+	padding: 20px 0;
+}
+
+/* Summary actions: flex row (Cart LEFT, Order Now RIGHT) */
+.swift-single-product__summary .cart { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.swift-single-product__summary .single_add_to_cart_button {
+	flex: 1;
+	background: #fff;
+	border: 2px solid var(--swift-primary);
+	color: var(--swift-primary);
+	border-radius: var(--swift-radius);
+	padding: 12px 16px;
+	font-size: 1rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: .2s;
+}
+.swift-single-product__summary .single_add_to_cart_button:hover { background: var(--swift-bg-alt); }
+.swift-buy-now-btn {
+	flex: 1;
+	background: var(--swift-primary);
+	color: #fff;
+	border: 2px solid var(--swift-primary);
+	border-radius: var(--swift-radius);
+	padding: 12px 16px;
+	font-size: 1rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: .2s;
+}
+.swift-buy-now-btn:hover { background: var(--swift-primary-dark); }
+.swift-buy-now-btn:focus-visible,
+.single_add_to_cart_button:focus-visible { outline: 3px solid var(--swift-primary); outline-offset: 2px; }
+.swift-buy-now-btn.is-loading { opacity: .7; cursor: not-allowed; }
+
+/* Trust Badge */
+.swift-trust-badge {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 10px;
+	font-size: .88rem;
+	font-weight: 600;
+	color: #276749;
+}
+
+/* WhatsApp Button */
+.swift-whatsapp-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 10px;
+	background: #25d366;
+	color: #fff;
+	padding: 10px 16px;
+	border-radius: var(--swift-radius);
+	font-weight: 600;
+	font-size: .9rem;
+	transition: background .2s;
+}
+.swift-whatsapp-btn:hover { background: #1da851; }
+.swift-whatsapp-btn:focus-visible { outline: 2px solid #1da851; outline-offset: 2px; }
+
+/* ==========================================================================
+ * VARIATION SWATCHES
+ * ========================================================================== */
+.swift-color-swatches,
+.swift-pis-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 8px 0;
+}
+.swift-color-swatch {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	border: 2px solid transparent;
+	cursor: pointer;
+	transition: .2s;
+	outline: none;
+	flex-shrink: 0;
+}
+.swift-color-swatch.is-active {
+	outline: 2px solid var(--swift-primary);
+	outline-offset: 2px;
+}
+.swift-color-swatch.is-disabled { opacity: .4; cursor: not-allowed; }
+.swift-color-swatch:focus-visible { outline: 2px solid var(--swift-primary); outline-offset: 2px; }
+
+.swift-pis-btn {
+	padding: 8px 16px;
+	border: 1.5px solid var(--swift-border);
+	border-radius: var(--swift-radius);
+	background: #fff;
+	cursor: pointer;
+	font-weight: 600;
+	font-size: .9rem;
+	transition: .2s;
+}
+.swift-pis-btn.is-active {
+	border-color: var(--swift-primary);
+	background: rgba(229,62,62,.07);
+	color: var(--swift-primary);
+}
+.swift-pis-btn.is-disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
+.swift-pis-btn:focus-visible { outline: 2px solid var(--swift-primary); outline-offset: 2px; }
+
+.swift-swatch-label { font-size: .85rem; color: var(--swift-text-muted); font-weight: 500; }
+
+/* Extra color rows for multi-pis */
+#swift-multi-color-container { margin-top: 12px; }
+.swift-extra-color-row { margin-bottom: 10px; }
+.swift-extra-color-row label { font-size: .85rem; font-weight: 600; display: block; margin-bottom: 6px; }
+
+/* ==========================================================================
+ * CHECKOUT STYLES (COD-friendly, no field removed)
+ * ========================================================================== */
+.woocommerce-checkout .woocommerce-billing-fields__field-wrapper { gap: 12px; }
+.woocommerce-checkout input[type="text"],
+.woocommerce-checkout input[type="email"],
+.woocommerce-checkout input[type="tel"],
+.woocommerce-checkout select,
+.woocommerce-checkout textarea {
+	border: 1.5px solid var(--swift-border);
+	border-radius: var(--swift-radius);
+	padding: 10px 14px;
+	font-size: 16px; /* iOS no-zoom */
+	width: 100%;
+	transition: border-color .2s;
+}
+.woocommerce-checkout input:focus,
+.woocommerce-checkout select:focus,
+.woocommerce-checkout textarea:focus { border-color: var(--swift-primary); outline: none; }
+
+#place_order {
+	background: var(--swift-primary) !important;
+	border-color: var(--swift-primary) !important;
+	font-size: 1rem !important;
+	border-radius: var(--swift-radius) !important;
+	padding: 14px !important;
+	font-weight: 700 !important;
+}
+#place_order:focus-visible { outline: 3px solid var(--swift-primary); outline-offset: 2px; }
+
+/* ==========================================================================
+ * THANK YOU PAGE
+ * ========================================================================== */
+.woocommerce-order { max-width: 640px; margin: 30px auto; }
+.woocommerce-order .woocommerce-thankyou-order-received {
+	background: var(--swift-primary);
+	color: #fff;
+	padding: 14px 20px;
+	border-radius: var(--swift-radius);
+	font-size: 1.1rem;
+	font-weight: 700;
+	margin-bottom: 20px;
+}
+
+/* ==========================================================================
+ * EMPTY CART & EMPTY SEARCH
+ * ========================================================================== */
+.woocommerce-cart-empty { text-align: center; padding: 40px 20px; }
+.woocommerce-no-products-found { text-align: center; padding: 30px 20px; }
+
+.swift-btn {
+	display: inline-flex;
+	align-items: center;
+	padding: 11px 22px;
+	border-radius: var(--swift-radius);
+	font-weight: 700;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: .2s;
+}
+.swift-btn--primary {
+	background: var(--swift-primary);
+	color: #fff;
+	border: none;
+}
+.swift-btn--primary:hover { background: var(--swift-primary-dark); }
+.swift-btn--primary:focus-visible { outline: 2px solid var(--swift-primary); outline-offset: 2px; }
+
+/* ==========================================================================
+ * FOOTER
+ * ========================================================================== */
+.swift-footer {
+	background: var(--swift-text);
+	color: #e2e8f0;
+	text-align: center;
+	padding: 20px 16px calc(20px + var(--swift-bottom-nav-h));
+	font-size: .88rem;
+}
+
+/* ==========================================================================
+ * DESKTOP — min-width: 768px
+ * ========================================================================== */
+@media (min-width: 768px) {
+	.swift-menu-toggle { display: none; }
+	.swift-primary-nav { display: block; padding: 0; border: none; }
+	.swift-nav-list { flex-direction: row; gap: 0; }
+	.swift-nav-list li a { border-bottom: none; padding: 8px 14px; }
+	.swift-mobile-bottom-nav { display: none; }
+	.swift-footer { padding-bottom: 20px; }
+
+	ul.products.swift-products-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+	.swift-single-product__wrapper { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+@media (min-width: 1024px) {
+	.swift-container { padding: 0 32px; }
+	.swift-header__inner { height: 70px; }
+}

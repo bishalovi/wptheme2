@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "download_url": "https://github.com/bishalovi/wptheme2/releases/download/v1.0.0/swift-woo.zip",
+  "details_url": "https://github.com/bishalovi/wptheme2/releases/tag/v1.0.0",
+  "tested": "6.7",
+  "requires_php": "8.2",
+  "changelog": "Initial release of Swift Woo with HPOS, PixelYourSite, COD & GitHub Updater support."
+}
