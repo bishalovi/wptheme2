@@ -1072,6 +1072,31 @@ p.stock {
 	padding: 10px 0;
 	border-top: 1px dashed var(--swift-border);
 }
+.woocommerce-checkout-review-order-table tr.shipping th,
+.swift-review-order-table tr.shipping th {
+	font-weight: 600 !important;
+	color: var(--swift-text-muted) !important;
+	font-size: .92rem !important;
+	text-align: left !important;
+	padding: 10px 0 !important;
+	border-top: 1px dashed var(--swift-border) !important;
+}
+.woocommerce-checkout-review-order-table tr.shipping td,
+.swift-review-order-table tr.shipping td {
+	text-align: right !important;
+	font-weight: 700 !important;
+	font-size: 1rem !important;
+	color: var(--swift-text) !important;
+	padding: 10px 0 !important;
+	border-top: 1px dashed var(--swift-border) !important;
+}
+.woocommerce-checkout-review-order-table tr.shipping ul#shipping_method,
+.swift-review-order-table tr.shipping ul#shipping_method,
+.woocommerce-checkout-review-order-table .woocommerce-shipping-methods,
+.swift-review-order-table .woocommerce-shipping-methods,
+.woocommerce-checkout-review-order-table .woocommerce-shipping-destination {
+	display: none !important;
+}
 .woocommerce-checkout-review-order-table tfoot tr.order-total th,
 .woocommerce-checkout-review-order-table tfoot tr.order-total td,
 .swift-review-order-table tfoot tr.order-total th,

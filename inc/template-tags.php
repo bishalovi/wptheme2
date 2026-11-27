@@ -234,7 +234,7 @@ add_action( 'woocommerce_after_single_product', 'swift_woo_mobile_sticky_buy_bar
  */
 if ( ! function_exists( 'swift_woo_popup_checkout_modal' ) ) {
 	function swift_woo_popup_checkout_modal() {
-		if ( ! class_exists( 'WooCommerce' ) || is_checkout() || is_order_received_page() ) {
+		if ( ! class_exists( 'WooCommerce' ) || is_checkout() || is_order_received_page() || is_cart() ) {
 			return;
 		}
 		?>

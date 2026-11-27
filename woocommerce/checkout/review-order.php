@@ -3,7 +3,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Review Order Template (GrihoTools Bengali Style).
- * Displays product thumbnail images, Bengali labels, and clean totals.
+ * Displays product thumbnail images, Bengali labels, clean single shipping row.
  * 100% official WooCommerce hooks preserved. Zero hooks altered or removed.
  */
 ?>
@@ -68,7 +68,12 @@ defined( 'ABSPATH' ) || exit;
 
 			<?php do_action( 'woocommerce_review_order_before_shipping' ); ?>
 
-			<?php wc_cart_totals_shipping_html(); ?>
+			<tr class="woocommerce-shipping-totals shipping">
+				<th><?php esc_html_e( 'ডেলিভারি চার্জ', 'swift-woo' ); ?></th>
+				<td data-title="<?php esc_attr_e( 'ডেলিভারি চার্জ', 'swift-woo' ); ?>">
+					<?php echo WC()->cart->get_cart_shipping_total(); ?>
+				</td>
+			</tr>
 
 			<?php do_action( 'woocommerce_review_order_after_shipping' ); ?>
 

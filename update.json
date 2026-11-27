@@ -1,8 +1,8 @@
 {
-  "version": "1.0.17",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.17.zip",
+  "version": "1.0.18",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.18.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.17 - GrihoTools Bengali style checkout review order template with product thumbnail images, Bengali labels, clean 3-field layout, and zero hook alterations."
+  "changelog": "Release v1.0.18 - Eliminate double shipping method and duplicate headers, full same-to-same GrihoTools single-line delivery row and product thumbnails, zero hook alterations."
 }
