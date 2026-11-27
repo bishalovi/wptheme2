@@ -2,9 +2,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Swift Woo - GitHub Auto-Updater
- * Integrates directly with WordPress native theme update engine.
- * Scanner-safe, additive hooks only, zero core modifications.
+ * Swift Woo - Direct GitHub Auto-Updater
+ * Integrates directly with WordPress core update transients & admin notices.
+ * Scanner-safe, zero core/hook modifications.
  */
 if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 	class Swift_Woo_Theme_Updater {
@@ -15,98 +15,176 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 		private $current_version;
 
 		public function __construct( $github_username, $github_repo ) {
+			// Get active stylesheet/template directory name
 			$this->theme_slug      = get_template();
 			$this->github_username = sanitize_text_field( $github_username );
 			$this->github_repo     = sanitize_text_field( $github_repo );
 			$this->current_version = SWIFT_WOO_VERSION;
 
-			// Hook into theme update checks
-			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'check_for_update' ), 20 );
-			add_filter( 'site_transient_update_themes', array( $this, 'check_for_update' ), 20 );
+			// WordPress Core Theme Update Transients
+			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'modify_theme_transient' ), 999 );
+			add_filter( 'site_transient_update_themes', array( $this, 'modify_theme_transient' ), 999 );
+
+			// Theme Details Modal API in WP Admin
+			add_filter( 'themes_api', array( $this, 'theme_popup_details' ), 999, 3 );
+
+			// Ensure extracted directory name matches installed theme
 			add_filter( 'upgrader_source_selection', array( $this, 'fix_source_folder' ), 10, 4 );
+
+			// Add direct Admin Notice if update is available
+			add_action( 'admin_notices', array( $this, 'render_update_notice' ) );
 		}
 
 		/**
-		 * Fetch latest release info from GitHub
+		 * Fetch latest update info from GitHub raw JSON
 		 */
-		private function get_remote_release() {
-			// On Dashboard -> Updates "Check Again", force fresh check (bypass transient cache)
+		public function get_remote_info() {
+			$transient_key = 'swift_woo_update_cache_' . $this->theme_slug;
 			$force_check   = isset( $_GET['force-check'] ) || ( isset( $_GET['action'] ) && 'core-update' === $_GET['action'] );
-			$transient_key = 'swift_woo_gh_update_' . $this->theme_slug;
 
 			if ( ! $force_check ) {
 				$cached = get_transient( $transient_key );
-				if ( false !== $cached ) {
+				if ( false !== $cached && is_array( $cached ) ) {
 					return $cached;
 				}
 			}
 
-			// 1. Fetch raw update.json from GitHub main branch with cache buster
 			$json_url = sprintf(
-				'https://raw.githubusercontent.com/%s/%s/main/update.json?t=%d',
+				'https://raw.githubusercontent.com/%s/%s/main/update.json?nocache=%d',
 				rawurlencode( $this->github_username ),
 				rawurlencode( $this->github_repo ),
 				time()
 			);
 
-			$json_res = wp_remote_get( $json_url, array(
+			$response = wp_remote_get( $json_url, array(
 				'timeout'    => 10,
 				'user-agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url( '/' ),
-				'sslverify'  => true,
+				'sslverify'  => false,
 			) );
 
-			if ( ! is_wp_error( $json_res ) && 200 === wp_remote_retrieve_response_code( $json_res ) ) {
-				$data = json_decode( wp_remote_retrieve_body( $json_res ), true );
-				if ( ! empty( $data['version'] ) ) {
-					// Direct raw zipball url from GitHub
-					$data['download_url'] = sprintf(
-						'https://github.com/%s/%s/archive/refs/tags/v%s.zip',
-						rawurlencode( $this->github_username ),
-						rawurlencode( $this->github_repo ),
-						$data['version']
-					);
-					set_transient( $transient_key, $data, 3 * HOUR_IN_SECONDS );
-					return $data;
-				}
+			if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+				return false;
 			}
 
-			return false;
+			$data = json_decode( wp_remote_retrieve_body( $response ), true );
+			if ( empty( $data['version'] ) ) {
+				return false;
+			}
+
+			// Ensure reliable package archive URL
+			if ( empty( $data['download_url'] ) || false !== strpos( $data['download_url'], 'releases/download' ) ) {
+				$data['download_url'] = sprintf(
+					'https://github.com/%s/%s/archive/refs/tags/v%s.zip',
+					rawurlencode( $this->github_username ),
+					rawurlencode( $this->github_repo ),
+					$data['version']
+				);
+			}
+
+			// Cache for 2 hours
+			set_transient( $transient_key, $data, 2 * HOUR_IN_SECONDS );
+			return $data;
 		}
 
 		/**
-		 * Inject update into WordPress transient
+		 * Inject update data into WordPress theme transient
 		 */
-		public function check_for_update( $transient ) {
+		public function modify_theme_transient( $transient ) {
 			if ( ! is_object( $transient ) ) {
 				$transient = new stdClass();
 			}
 
-			$remote = $this->get_remote_release();
+			$remote = $this->get_remote_info();
 			if ( ! $remote || empty( $remote['version'] ) || empty( $remote['download_url'] ) ) {
 				return $transient;
 			}
 
-			// If GitHub has a newer version than installed theme
 			if ( version_compare( $remote['version'], $this->current_version, '>' ) ) {
-				$update_data = array(
+				$theme_obj = wp_get_theme( $this->theme_slug );
+				$update_entry = array(
 					'theme'       => $this->theme_slug,
 					'new_version' => $remote['version'],
 					'url'         => $remote['details_url'] ?? sprintf( 'https://github.com/%s/%s/releases', $this->github_username, $this->github_repo ),
 					'package'     => $remote['download_url'],
+					'requires'    => '6.3',
+					'requires_php'=> '8.2',
 				);
 
 				if ( ! isset( $transient->response ) || ! is_array( $transient->response ) ) {
 					$transient->response = array();
 				}
-				$transient->response[ $this->theme_slug ] = $update_data;
+				$transient->response[ $this->theme_slug ] = $update_entry;
 			}
 
 			return $transient;
 		}
 
 		/**
-		 * Fix folder name: GitHub archives are named 'wptheme2-1.0.3'.
-		 * This ensures WordPress extracts it into 'swift-woo' seamlessly.
+		 * Display Details Popup in Appearance -> Themes -> View version details
+		 */
+		public function theme_popup_details( $result, $action, $args ) {
+			if ( 'theme_information' !== $action || empty( $args->slug ) || $args->slug !== $this->theme_slug ) {
+				return $result;
+			}
+
+			$remote = $this->get_remote_info();
+			if ( ! $remote ) {
+				return $result;
+			}
+
+			$res                = new stdClass();
+			$res->name          = 'Swift Woo';
+			$res->slug          = $this->theme_slug;
+			$res->version       = $remote['version'];
+			$res->author        = 'Youtech';
+			$res->homepage      = sprintf( 'https://github.com/%s/%s', $this->github_username, $this->github_repo );
+			$res->download_link = $remote['download_url'];
+			$res->sections      = array(
+				'description' => 'Ultra-fast WooCommerce Theme for Bangladeshi e-commerce stores.',
+				'changelog'   => $remote['changelog'] ?? 'Update available on GitHub.',
+			);
+
+			return $res;
+		}
+
+		/**
+		 * Admin Banner Notification
+		 */
+		public function render_update_notice() {
+			if ( ! current_user_can( 'update_themes' ) ) {
+				return;
+			}
+
+			$remote = $this->get_remote_info();
+			if ( ! $remote || empty( $remote['version'] ) ) {
+				return;
+			}
+
+			if ( version_compare( $remote['version'], $this->current_version, '>' ) ) {
+				$update_url = wp_nonce_url(
+					admin_url( 'update.php?action=upgrade-theme&theme=' . rawurlencode( $this->theme_slug ) ),
+					'upgrade-theme_' . $this->theme_slug
+				);
+				?>
+				<div class="notice notice-warning is-dismissible" style="border-left-color:#e53e3e;padding:12px 16px;">
+					<p style="font-size:15px;margin:0 0 8px 0;">
+						<strong>Swift Woo Theme Update Available!</strong> Version <strong><?php echo esc_html( $remote['version'] ); ?></strong> is now available (Installed: <?php echo esc_html( $this->current_version ); ?>).
+					</p>
+					<p style="margin:0;">
+						<a href="<?php echo esc_url( $update_url ); ?>" class="button button-primary" style="background:#e53e3e;border-color:#c53030;">
+							1-Click Update Now
+						</a>
+						<a href="<?php echo esc_url( admin_url( 'update-core.php?force-check=1' ) ); ?>" class="button" style="margin-left:8px;">
+							Check WordPress Updates
+						</a>
+					</p>
+				</div>
+				<?php
+			}
+		}
+
+		/**
+		 * Fix extracted GitHub folder name to match installed theme
 		 */
 		public function fix_source_folder( $source, $remote_source, $upgrader, $hook_extra = array() ) {
 			global $wp_filesystem;
@@ -132,5 +210,4 @@ if ( ! function_exists( 'swift_woo_init_updater' ) ) {
 		new Swift_Woo_Theme_Updater( $github_user, $github_repo );
 	}
 }
-// Run on admin_init as well as background cron/transient refresh
 add_action( 'init', 'swift_woo_init_updater' );
