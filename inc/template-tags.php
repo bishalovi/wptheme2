@@ -3,7 +3,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Output the Buy Now / Order Now button.
- * Uses standard WooCommerce AJAX cart flow — no hook modification.
+ * Uses standard WooCommerce AJAX cart flow — zero hook removal.
  */
 if ( ! function_exists( 'swift_woo_order_now_button' ) ) {
 	function swift_woo_order_now_button( $passed_product = null ) {
@@ -29,6 +29,44 @@ if ( ! function_exists( 'swift_woo_order_now_button' ) ) {
 		<?php
 	}
 }
+
+/**
+ * Hook Buy Now & COD badge inside single product add-to-cart form
+ * Zero official hooks modified — purely additive.
+ */
+if ( ! function_exists( 'swift_woo_add_buttons_to_single_form' ) ) {
+	function swift_woo_add_buttons_to_single_form() {
+		global $product;
+		if ( ! $product ) {
+			return;
+		}
+		swift_woo_order_now_button( $product );
+	}
+}
+add_action( 'woocommerce_after_add_to_cart_button', 'swift_woo_add_buttons_to_single_form', 5 );
+
+if ( ! function_exists( 'swift_woo_add_cod_to_single_form' ) ) {
+	function swift_woo_add_cod_to_single_form() {
+		swift_woo_cod_badge();
+		swift_woo_whatsapp_button();
+	}
+}
+add_action( 'woocommerce_after_add_to_cart_form', 'swift_woo_add_cod_to_single_form', 10 );
+
+/**
+ * Hook Buy Now to Shop/Home product loop cards
+ * Zero official hooks modified — purely additive.
+ */
+if ( ! function_exists( 'swift_woo_add_loop_buy_now' ) ) {
+	function swift_woo_add_loop_buy_now() {
+		global $product;
+		if ( ! $product ) {
+			return;
+		}
+		swift_woo_order_now_button( $product );
+	}
+}
+add_action( 'woocommerce_after_shop_loop_item', 'swift_woo_add_loop_buy_now', 15 );
 
 /**
  * Output WhatsApp order button (Single Product Page only).

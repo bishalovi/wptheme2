@@ -5,8 +5,15 @@ defined( 'ABSPATH' ) || exit;
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<?php
+$bengali_font = get_template_directory() . '/assets/fonts/HindSiliguri-Regular.woff2';
+$inter_font   = get_template_directory() . '/assets/fonts/Inter-Regular.woff2';
+if ( file_exists( $bengali_font ) ) : ?>
 <link rel="preload" href="<?php echo esc_url( get_template_directory_uri() . '/assets/fonts/HindSiliguri-Regular.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
+<?php endif; ?>
+<?php if ( file_exists( $inter_font ) ) : ?>
 <link rel="preload" href="<?php echo esc_url( get_template_directory_uri() . '/assets/fonts/Inter-Regular.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
+<?php endif; ?>
 <?php wp_head(); // OFFICIAL HOOK — never removed ?>
 </head>
 <body <?php body_class(); ?>>

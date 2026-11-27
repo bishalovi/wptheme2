@@ -2,8 +2,7 @@
 defined( 'ABSPATH' ) || exit;
 /**
  * Single Product page template.
- * Uses get_header / get_footer to maintain all WordPress hooks.
- * All WooCommerce single product hooks remain 100% intact.
+ * All official WooCommerce single product hooks remain 100% intact.
  */
 get_header();
 ?>
@@ -12,7 +11,10 @@ get_header();
 		<?php
 		while ( have_posts() ) :
 			the_post();
-			// OFFICIAL HOOK - never removed
+			global $product;
+			$product = wc_get_product( get_the_ID() );
+
+			// OFFICIAL HOOK - intact
 			do_action( 'woocommerce_before_single_product' );
 
 			if ( post_password_required() ) {
@@ -31,18 +33,9 @@ get_header();
 
 				<div class="swift-single-product__summary">
 					<?php
-					// OFFICIAL HOOK — intact (outputs title, price, excerpt, add-to-cart, meta, sharing)
+					// OFFICIAL HOOK — intact (outputs title, rating, price, excerpt, add-to-cart form, meta, sharing)
 					do_action( 'woocommerce_single_product_summary' );
 					?>
-
-					<!-- Buy Now Button (RIGHT of Cart button — via CSS flex) -->
-					<?php swift_woo_order_now_button( $product ); ?>
-
-					<!-- Cash on Delivery Trust Badge -->
-					<?php swift_woo_cod_badge(); ?>
-
-					<!-- WhatsApp Order Button -->
-					<?php swift_woo_whatsapp_button(); ?>
 				</div>
 
 			</div>
