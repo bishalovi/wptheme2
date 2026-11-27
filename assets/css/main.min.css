@@ -226,8 +226,14 @@ input { font-size: 16px; } /* iOS no-zoom */
 .swift-bottom-nav__item:focus-visible { outline: 2px solid var(--swift-primary); }
 
 /* ==========================================================================
- * PRODUCTS GRID & CARD
+ * HOMEPAGE CLEAN VIEW (Hide Default Sorting/Count for ichoicebd look)
  * ========================================================================== */
+.swift-homepage .woocommerce-ordering,
+.swift-homepage .woocommerce-result-count,
+.swift-homepage .woocommerce-breadcrumb {
+	display: none !important;
+}
+
 .swift-section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; padding-top: 20px; }
 
 /* Strict 2-col on mobile, 4-col on desktop */
@@ -275,7 +281,7 @@ ul.products li.product .woocommerce-loop-product__link img {
 	object-fit: cover !important;
 	display: block !important;
 	margin: 0 !important;
-	transition: none !important; /* No zoom or shake */
+	transition: none !important;
 	transform: none !important;
 }
 
@@ -376,11 +382,9 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 	padding: 20px 0;
 }
 
-/* Single product gallery */
 .swift-single-product__gallery .woocommerce-product-gallery { margin-bottom: 0 !important; }
 .swift-single-product__gallery img { border-radius: var(--swift-radius); width: 100%; height: auto; }
 
-/* Single product add-to-cart form flexbox */
 .swift-single-product__summary form.cart {
 	display: flex !important;
 	flex-wrap: wrap !important;
@@ -389,10 +393,7 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 	margin: 16px 0 !important;
 }
 
-/* Quantity input */
-.swift-single-product__summary form.cart .quantity {
-	margin: 0 !important;
-}
+.swift-single-product__summary form.cart .quantity { margin: 0 !important; }
 .swift-single-product__summary form.cart .quantity input.qty {
 	border: 1.5px solid var(--swift-border);
 	border-radius: var(--swift-radius);
@@ -402,7 +403,6 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 	text-align: center;
 }
 
-/* Left: Add to Cart button */
 .swift-single-product__summary .single_add_to_cart_button {
 	flex: 1 1 auto !important;
 	background: #ffffff !important;
@@ -420,7 +420,6 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 	background: var(--swift-bg-alt) !important;
 }
 
-/* Right: Order Now button */
 .swift-single-product__summary .swift-buy-now-btn {
 	flex: 1 1 auto !important;
 	background: var(--swift-primary) !important;
@@ -438,7 +437,7 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 	background: var(--swift-primary-dark) !important;
 }
 
-/* Trust Badge (Below buttons) */
+/* Trust Badge */
 .swift-trust-badge {
 	display: flex;
 	align-items: center;
@@ -518,8 +517,31 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 .swift-extra-color-row label { font-size: .85rem; font-weight: 600; display: block; margin-bottom: 6px; }
 
 /* ==========================================================================
- * CHECKOUT & THANK YOU
+ * CHECKOUT: CLEAN 3-FIELD SIMPLIFIED VIEW (CSS-ONLY HIDE — 100% HOOK SAFE)
  * ========================================================================== */
+/* Hide unnecessary billing fields cleanly without unsetting PHP hooks */
+.woocommerce-checkout #billing_company_field,
+.woocommerce-checkout #billing_country_field,
+.woocommerce-checkout #billing_address_2_field,
+.woocommerce-checkout #billing_city_field,
+.woocommerce-checkout #billing_state_field,
+.woocommerce-checkout #billing_postcode_field,
+.woocommerce-checkout .woocommerce-additional-fields h3,
+.woocommerce-checkout .woocommerce-account-fields,
+.woocommerce-checkout #ship-to-different-address,
+.woocommerce-checkout .shipping_address {
+	display: none !important;
+}
+
+/* Style essential 3 fields: Name, Phone, Full Address */
+.woocommerce-checkout #billing_first_name_field,
+.woocommerce-checkout #billing_phone_field,
+.woocommerce-checkout #billing_address_1_field {
+	width: 100% !important;
+	float: none !important;
+	margin-bottom: 12px !important;
+}
+
 .woocommerce-checkout input[type="text"],
 .woocommerce-checkout input[type="email"],
 .woocommerce-checkout input[type="tel"],
@@ -527,7 +549,7 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 .woocommerce-checkout textarea {
 	border: 1.5px solid var(--swift-border);
 	border-radius: var(--swift-radius);
-	padding: 10px 14px;
+	padding: 12px 14px;
 	font-size: 16px;
 	width: 100%;
 }
@@ -538,10 +560,12 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 #place_order {
 	background: var(--swift-primary) !important;
 	border-color: var(--swift-primary) !important;
-	font-size: 1rem !important;
+	font-size: 1.05rem !important;
 	border-radius: var(--swift-radius) !important;
-	padding: 14px !important;
+	padding: 14px 20px !important;
 	font-weight: 700 !important;
+	width: 100% !important;
+	cursor: pointer !important;
 }
 
 .woocommerce-order { max-width: 640px; margin: 30px auto; }

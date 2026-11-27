@@ -6,6 +6,12 @@ defined( 'ABSPATH' ) || exit;
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <?php
+// Dynamic SEO Canonical URL
+if ( ! has_action( 'wp_head', 'rel_canonical' ) && is_singular() ) {
+	echo '<link rel="canonical" href="' . esc_url( get_permalink() ) . '">' . "\n";
+}
+
+// Local Fonts Preload (Safe check)
 $bengali_font = get_template_directory() . '/assets/fonts/HindSiliguri-Regular.woff2';
 $inter_font   = get_template_directory() . '/assets/fonts/Inter-Regular.woff2';
 if ( file_exists( $bengali_font ) ) : ?>
@@ -27,7 +33,7 @@ if ( file_exists( $bengali_font ) ) : ?>
 
 <header class="swift-header" role="banner">
 	<div class="swift-header__inner">
-		<!-- Logo -->
+		<!-- Logo (100% Dynamic home_url) -->
 		<div class="swift-header__logo">
 			<?php
 			if ( has_custom_logo() ) {
