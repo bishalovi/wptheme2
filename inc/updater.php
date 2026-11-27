@@ -2,8 +2,8 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Swift Woo - Direct GitHub Auto-Updater
- * Integrates directly with WordPress core update transients & admin notices.
+ * Swift Woo - Native GitHub Auto-Updater
+ * Integrates quietly with standard WordPress theme updates (no banner notification).
  * Scanner-safe, zero core/hook modifications.
  */
 if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
@@ -15,24 +15,20 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 		private $current_version;
 
 		public function __construct( $github_username, $github_repo ) {
-			// Get active stylesheet/template directory name
 			$this->theme_slug      = get_template();
 			$this->github_username = sanitize_text_field( $github_username );
 			$this->github_repo     = sanitize_text_field( $github_repo );
 			$this->current_version = SWIFT_WOO_VERSION;
 
-			// WordPress Core Theme Update Transients
-			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'modify_theme_transient' ), 999 );
-			add_filter( 'site_transient_update_themes', array( $this, 'modify_theme_transient' ), 999 );
+			// Native WordPress Theme Update Transients (silent in Dashboard -> Updates & Appearance -> Themes)
+			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'modify_theme_transient' ), 20 );
+			add_filter( 'site_transient_update_themes', array( $this, 'modify_theme_transient' ), 20 );
 
 			// Theme Details Modal API in WP Admin
-			add_filter( 'themes_api', array( $this, 'theme_popup_details' ), 999, 3 );
+			add_filter( 'themes_api', array( $this, 'theme_popup_details' ), 20, 3 );
 
 			// Ensure extracted directory name matches installed theme
 			add_filter( 'upgrader_source_selection', array( $this, 'fix_source_folder' ), 10, 4 );
-
-			// Add direct Admin Notice if update is available
-			add_action( 'admin_notices', array( $this, 'render_update_notice' ) );
 		}
 
 		/**
@@ -81,8 +77,7 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 				);
 			}
 
-			// Cache for 2 hours
-			set_transient( $transient_key, $data, 2 * HOUR_IN_SECONDS );
+			set_transient( $transient_key, $data, 3 * HOUR_IN_SECONDS );
 			return $data;
 		}
 
@@ -100,7 +95,6 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 			}
 
 			if ( version_compare( $remote['version'], $this->current_version, '>' ) ) {
-				$theme_obj = wp_get_theme( $this->theme_slug );
 				$update_entry = array(
 					'theme'       => $this->theme_slug,
 					'new_version' => $remote['version'],
@@ -145,42 +139,6 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 			);
 
 			return $res;
-		}
-
-		/**
-		 * Admin Banner Notification
-		 */
-		public function render_update_notice() {
-			if ( ! current_user_can( 'update_themes' ) ) {
-				return;
-			}
-
-			$remote = $this->get_remote_info();
-			if ( ! $remote || empty( $remote['version'] ) ) {
-				return;
-			}
-
-			if ( version_compare( $remote['version'], $this->current_version, '>' ) ) {
-				$update_url = wp_nonce_url(
-					admin_url( 'update.php?action=upgrade-theme&theme=' . rawurlencode( $this->theme_slug ) ),
-					'upgrade-theme_' . $this->theme_slug
-				);
-				?>
-				<div class="notice notice-warning is-dismissible" style="border-left-color:#e53e3e;padding:12px 16px;">
-					<p style="font-size:15px;margin:0 0 8px 0;">
-						<strong>Swift Woo Theme Update Available!</strong> Version <strong><?php echo esc_html( $remote['version'] ); ?></strong> is now available (Installed: <?php echo esc_html( $this->current_version ); ?>).
-					</p>
-					<p style="margin:0;">
-						<a href="<?php echo esc_url( $update_url ); ?>" class="button button-primary" style="background:#e53e3e;border-color:#c53030;">
-							1-Click Update Now
-						</a>
-						<a href="<?php echo esc_url( admin_url( 'update-core.php?force-check=1' ) ); ?>" class="button" style="margin-left:8px;">
-							Check WordPress Updates
-						</a>
-					</p>
-				</div>
-				<?php
-			}
 		}
 
 		/**
