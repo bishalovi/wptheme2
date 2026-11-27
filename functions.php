@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.11' );
+define( 'SWIFT_WOO_VERSION', '1.0.12' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -581,6 +581,14 @@ if ( ! function_exists( 'swift_woo_order_button_text' ) ) {
 	}
 }
 add_filter( 'woocommerce_order_button_text', 'swift_woo_order_button_text' );
+
+// Translate Add to Cart button text to Bengali
+add_filter( 'woocommerce_product_single_add_to_cart_text', function() {
+	return esc_html__( 'কার্টে যোগ করুন', 'swift-woo' );
+} );
+add_filter( 'woocommerce_product_add_to_cart_text', function() {
+	return esc_html__( 'কার্টে যোগ করুন', 'swift-woo' );
+} );
 
 /* -----------------------------------------------------------------------
  * 15. INCLUDE MODULES

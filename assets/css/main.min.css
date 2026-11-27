@@ -225,6 +225,29 @@ input { font-size: 16px; } /* iOS no-zoom */
 .swift-bottom-nav__item:hover { color: var(--swift-primary); }
 .swift-bottom-nav__item:focus-visible { outline: 2px solid var(--swift-primary); }
 
+.swift-bottom-nav__icon-wrap {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+.swift-bottom-nav__icon-wrap .swift-cart-count {
+	position: absolute;
+	top: -6px;
+	right: -8px;
+	background: var(--swift-primary);
+	color: #ffffff;
+	font-size: .65rem;
+	font-weight: 700;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
 /* ==========================================================================
  * HOMEPAGE CLEAN VIEW (Hide Default Sorting/Count for ichoicebd look)
  * ========================================================================== */
@@ -501,12 +524,38 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 
 .swift-single-product__summary .price ins { text-decoration: none; }
 
+/* In-Stock Badge */
+.swift-single-product__summary .stock.in-stock,
+.swift-single-product__summary .in-stock {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: #f0fff4;
+	color: #22543d;
+	border: 1px solid #9ae6b4;
+	padding: 4px 12px;
+	border-radius: 20px;
+	font-size: .85rem;
+	font-weight: 700;
+	margin-bottom: 12px;
+}
+.swift-single-product__summary .stock.in-stock::before,
+.swift-single-product__summary .in-stock::before {
+	content: '✓';
+	font-weight: 900;
+}
+
+/* Hide messy SKU, Categories, Tags meta */
+.swift-single-product__summary .product_meta {
+	display: none !important;
+}
+
 .swift-single-product__summary form.cart {
 	display: flex !important;
 	flex-wrap: wrap !important;
 	gap: 10px !important;
 	align-items: center !important;
-	margin: 18px 0 !important;
+	margin: 16px 0 !important;
 }
 
 .swift-single-product__summary form.cart .quantity,
@@ -518,11 +567,12 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 	border-radius: var(--swift-radius) !important;
 	overflow: hidden !important;
 	background: #ffffff !important;
+	flex-shrink: 0 !important;
 }
 
 .swift-qty-btn {
-	width: 40px !important;
-	height: 46px !important;
+	width: 38px !important;
+	height: 48px !important;
 	background: var(--swift-bg-alt) !important;
 	border: none !important;
 	font-size: 1.25rem !important;
@@ -543,46 +593,67 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 	border-radius: 0 !important;
 	padding: 0 !important;
 	font-size: 1.05rem !important;
-	width: 48px !important;
-	height: 46px !important;
+	width: 44px !important;
+	height: 48px !important;
 	text-align: center !important;
 	font-weight: 700 !important;
 	background: transparent !important;
 }
 
+/* Row 1 button: Add to Cart */
 .swift-single-product__summary .single_add_to_cart_button {
-	flex: 1 1 calc(50% - 40px) !important;
+	flex: 1 1 180px !important;
+	height: 48px !important;
 	background: #ffffff !important;
 	border: 2px solid var(--swift-primary) !important;
 	color: var(--swift-primary) !important;
 	border-radius: var(--swift-radius) !important;
-	padding: 13px 18px !important;
+	padding: 0 16px !important;
 	font-size: 1rem !important;
 	font-weight: 700 !important;
 	cursor: pointer !important;
 	transition: .2s !important;
 	text-align: center !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
 	line-height: 1.2 !important;
 }
 .swift-single-product__summary .single_add_to_cart_button:hover {
 	background: var(--swift-bg-alt) !important;
 }
 
+/* Row 2 button: Order Now (Full-width prominent primary CTA) */
 .swift-single-product__summary .swift-buy-now-btn {
-	flex: 1 1 calc(50% - 40px) !important;
+	flex: 1 1 100% !important;
+	width: 100% !important;
+	height: 52px !important;
 	background: var(--swift-primary) !important;
 	color: #ffffff !important;
 	border: 2px solid var(--swift-primary) !important;
 	border-radius: var(--swift-radius) !important;
-	padding: 13px 18px !important;
-	font-size: 1rem !important;
-	font-weight: 700 !important;
+	padding: 0 20px !important;
+	font-size: 1.15rem !important;
+	font-weight: 800 !important;
 	cursor: pointer !important;
 	transition: .2s !important;
 	text-align: center !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
 	line-height: 1.2 !important;
+	box-shadow: 0 3px 12px rgba(229,62,62,.25) !important;
 }
 .swift-single-product__summary .swift-buy-now-btn:hover {
+	background: var(--swift-primary-dark) !important;
+}
+
+/* Hide duplicate heading inside tabs */
+.woocommerce-Tabs-panel--description > h2:first-child,
+.woocommerce-Tabs-panel--reviews > h2:first-child,
+.woocommerce-Tabs-panel--additional_information > h2:first-child {
+	display: none !important;
+}
 	background: var(--swift-primary-dark) !important;
 }
 

@@ -102,8 +102,11 @@ if ( file_exists( $bengali_font ) ) : ?>
 		<svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
 		<span><?php esc_html_e( 'ক্যাটাগরি', 'swift-woo' ); ?></span>
 	</a>
-	<a href="<?php echo esc_url( swift_woo_get_wc_url( 'cart' ) ); ?>" class="swift-bottom-nav__item" aria-label="<?php esc_attr_e( 'কার্ট', 'swift-woo' ); ?>">
-		<svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-		<span><?php esc_html_e( 'কার্ট', 'swift-woo' ); ?> <span class="swift-cart-count"><?php echo absint( swift_woo_cart_count() ); ?></span></span>
+	<a href="<?php echo esc_url( swift_woo_get_wc_url( 'cart' ) ); ?>" class="swift-bottom-nav__item swift-bottom-nav__cart" aria-label="<?php esc_attr_e( 'কার্ট', 'swift-woo' ); ?>">
+		<div class="swift-bottom-nav__icon-wrap">
+			<svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+			<span class="swift-cart-count"><?php echo absint( swift_woo_cart_count() ); ?></span>
+		</div>
+		<span><?php esc_html_e( 'কার্ট', 'swift-woo' ); ?></span>
 	</a>
 </nav>
