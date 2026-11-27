@@ -48,6 +48,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 					<div class="swift-checkout-box swift-order-review-box">
 						<div class="swift-box-header">
 							<span class="swift-step-number">২</span>
+							<?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
 							<h2 class="swift-box-title" id="order_review_heading"><?php esc_html_e( 'আপনার অর্ডার বিবরণী', 'swift-woo' ); ?></h2>
 						</div>
 

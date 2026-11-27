@@ -1,8 +1,8 @@
 {
-  "version": "1.0.12",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.12.zip",
+  "version": "1.0.13",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.13.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.12 - Bengali 'কার্টে যোগ করুন' button text translation, hide messy SKU/Tags/Category product_meta, hide duplicate Description tab heading, fixed bottom nav cart badge overflow, and enhanced quantity stepper initialization."
+  "changelog": "Release v1.0.13 - 100% complete core WooCommerce hook audit: woocommerce_checkout_before_order_review_heading verified, zero hook removals, full PixelYourSite and Meta Pixel CAPI compatibility."
 }
