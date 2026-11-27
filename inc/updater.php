@@ -22,10 +22,11 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 
 			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'check_for_update' ) );
 			add_filter( 'site_transient_update_themes', array( $this, 'check_for_update' ) );
+			add_filter( 'upgrader_source_selection', array( $this, 'fix_source_folder' ), 10, 4 );
 		}
 
 		/**
-		 * Fetch latest release from GitHub API or Raw update.json
+		 * Fetch latest release or tag info from GitHub
 		 */
 		private function get_remote_release() {
 			$transient_key = 'swift_woo_gh_update_' . $this->theme_slug;
@@ -34,70 +35,63 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 				return $cached;
 			}
 
-			// First try GitHub Releases API
-			$api_url = sprintf(
-				'https://api.github.com/repos/%s/%s/releases/latest',
+			// 1. First check raw update.json on GitHub main branch
+			$json_url = sprintf(
+				'https://raw.githubusercontent.com/%s/%s/main/update.json',
 				rawurlencode( $this->github_username ),
 				rawurlencode( $this->github_repo )
 			);
 
-			$response = wp_remote_get( $api_url, array(
+			$json_res = wp_remote_get( $json_url, array(
 				'timeout'    => 10,
 				'user-agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url( '/' ),
-				'headers'    => array(
-					'Accept' => 'application/vnd.github.v3+json',
-				),
 			) );
 
-			if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-				// Fallback: Check raw update.json in the repo
-				$json_url = sprintf(
-					'https://raw.githubusercontent.com/%s/%s/main/update.json',
-					rawurlencode( $this->github_username ),
-					rawurlencode( $this->github_repo )
-				);
-
-				$json_res = wp_remote_get( $json_url, array( 'timeout' => 10 ) );
-				if ( ! is_wp_error( $json_res ) && 200 === wp_remote_retrieve_response_code( $json_res ) ) {
-					$data = json_decode( wp_remote_retrieve_body( $json_res ), true );
-					if ( ! empty( $data['version'] ) && ! empty( $data['download_url'] ) ) {
-						set_transient( $transient_key, $data, 6 * HOUR_IN_SECONDS );
-						return $data;
+			if ( ! is_wp_error( $json_res ) && 200 === wp_remote_retrieve_response_code( $json_res ) ) {
+				$data = json_decode( wp_remote_retrieve_body( $json_res ), true );
+				if ( ! empty( $data['version'] ) ) {
+					// Ensure a reliable download URL
+					if ( empty( $data['download_url'] ) || false !== strpos( $data['download_url'], 'releases/download' ) ) {
+						$data['download_url'] = sprintf(
+							'https://api.github.com/repos/%s/%s/zipball/refs/tags/v%s',
+							rawurlencode( $this->github_username ),
+							rawurlencode( $this->github_repo ),
+							$data['version']
+						);
 					}
-				}
-				return false;
-			}
-
-			$release = json_decode( wp_remote_retrieve_body( $response ), true );
-			if ( empty( $release['tag_name'] ) ) {
-				return false;
-			}
-
-			$version = ltrim( $release['tag_name'], 'v' );
-			$zip_url = '';
-
-			// If release has custom zip asset attached, use it; otherwise use zipball
-			if ( ! empty( $release['assets'] ) && is_array( $release['assets'] ) ) {
-				foreach ( $release['assets'] as $asset ) {
-					if ( ! empty( $asset['browser_download_url'] ) && preg_match( '/\.zip$/i', $asset['name'] ) ) {
-						$zip_url = $asset['browser_download_url'];
-						break;
-					}
+					set_transient( $transient_key, $data, 6 * HOUR_IN_SECONDS );
+					return $data;
 				}
 			}
 
-			if ( empty( $zip_url ) ) {
-				$zip_url = $release['zipball_url'] ?? '';
-			}
-
-			$data = array(
-				'version'      => sanitize_text_field( $version ),
-				'download_url' => esc_url_raw( $zip_url ),
-				'details_url'  => esc_url_raw( $release['html_url'] ?? '' ),
+			// 2. Fallback: GitHub Tags API
+			$tags_url = sprintf(
+				'https://api.github.com/repos/%s/%s/tags',
+				rawurlencode( $this->github_username ),
+				rawurlencode( $this->github_repo )
 			);
 
-			set_transient( $transient_key, $data, 6 * HOUR_IN_SECONDS );
-			return $data;
+			$tags_res = wp_remote_get( $tags_url, array(
+				'timeout'    => 10,
+				'user-agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url( '/' ),
+			) );
+
+			if ( ! is_wp_error( $tags_res ) && 200 === wp_remote_retrieve_response_code( $tags_res ) ) {
+				$tags = json_decode( wp_remote_retrieve_body( $tags_res ), true );
+				if ( ! empty( $tags ) && is_array( $tags ) ) {
+					$latest_tag = $tags[0];
+					$version    = ltrim( $latest_tag['name'], 'v' );
+					$data = array(
+						'version'      => sanitize_text_field( $version ),
+						'download_url' => esc_url_raw( $latest_tag['zipball_url'] ),
+						'details_url'  => sprintf( 'https://github.com/%s/%s/releases', rawurlencode( $this->github_username ), rawurlencode( $this->github_repo ) ),
+					);
+					set_transient( $transient_key, $data, 6 * HOUR_IN_SECONDS );
+					return $data;
+				}
+			}
+
+			return false;
 		}
 
 		/**
@@ -124,10 +118,27 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 
 			return $transient;
 		}
+
+		/**
+		 * Fix folder name when upgrading from GitHub zipball (which names folders like 'bishalovi-wptheme2-6e21e26')
+		 */
+		public function fix_source_folder( $source, $remote_source, $upgrader, $hook_extra = array() ) {
+			global $wp_filesystem;
+
+			if ( isset( $hook_extra['theme'] ) && $hook_extra['theme'] === $this->theme_slug ) {
+				$corrected_source = trailingslashit( $remote_source ) . $this->theme_slug;
+				if ( $source !== $corrected_source ) {
+					$wp_filesystem->move( $source, $corrected_source );
+					return trailingslashit( $corrected_source );
+				}
+			}
+
+			return $source;
+		}
 	}
 }
 
-// Initialize updater configured for https://github.com/bishalovi/wptheme2
+// Initialize updater
 if ( ! function_exists( 'swift_woo_init_updater' ) ) {
 	function swift_woo_init_updater() {
 		$github_user = get_theme_mod( 'swift_github_user', 'bishalovi' );

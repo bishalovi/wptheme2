@@ -1,7 +1,7 @@
 {
   "version": "1.0.2",
-  "download_url": "https://github.com/bishalovi/wptheme2/releases/download/v1.0.2/swift-woo.zip",
-  "details_url": "https://github.com/bishalovi/wptheme2/releases/tag/v1.0.2",
+  "download_url": "https://api.github.com/repos/bishalovi/wptheme2/zipball/refs/tags/v1.0.2",
+  "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
   "changelog": "Added front-page.php, archive-product.php, and content-product.php for native ichoicebd.com style product grid."
