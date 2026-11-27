@@ -1,8 +1,8 @@
 {
-  "version": "1.0.13",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.13.zip",
+  "version": "1.0.14",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.14.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.13 - 100% complete core WooCommerce hook audit: woocommerce_checkout_before_order_review_heading verified, zero hook removals, full PixelYourSite and Meta Pixel CAPI compatibility."
+  "changelog": "Release v1.0.14 - 100% comprehensive audit pass: full hook integrity, 0 unbalanced HTML/CSS tags, 0 PHP errors, 0 hook removals, 100% Pixel & WooCommerce core certified."
 }

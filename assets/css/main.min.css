@@ -654,8 +654,6 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
 .woocommerce-Tabs-panel--additional_information > h2:first-child {
 	display: none !important;
 }
-	background: var(--swift-primary-dark) !important;
-}
 
 /* WhatsApp Button (Single Product) */
 .swift-whatsapp-btn {
