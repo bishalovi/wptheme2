@@ -197,3 +197,32 @@ if ( ! function_exists( 'swift_woo_cart_count' ) ) {
 		return WC()->cart->get_cart_contents_count();
 	}
 }
+
+/**
+ * Mobile Sticky Buy Bar for Single Product (Shovaas style).
+ * Shows when scrolling past the main buy button on mobile devices.
+ */
+if ( ! function_exists( 'swift_woo_mobile_sticky_buy_bar' ) ) {
+	function swift_woo_mobile_sticky_buy_bar() {
+		if ( ! is_product() ) {
+			return;
+		}
+		global $product;
+		if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
+			return;
+		}
+		?>
+		<div class="swift-sticky-buy-bar" id="swift-sticky-buy-bar">
+			<div class="swift-sticky-buy-bar__inner">
+				<div class="swift-sticky-buy-bar__price">
+					<?php echo wp_kses_post( $product->get_price_html() ); ?>
+				</div>
+				<button type="button" class="swift-sticky-buy-btn" data-product-id="<?php echo esc_attr( $product->get_id() ); ?>">
+					<?php esc_html_e( 'অর্ডার করুন', 'swift-woo' ); ?>
+				</button>
+			</div>
+		</div>
+		<?php
+	}
+}
+add_action( 'woocommerce_after_single_product', 'swift_woo_mobile_sticky_buy_bar', 25 );

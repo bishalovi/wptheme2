@@ -1,8 +1,8 @@
 {
-  "version": "1.0.10",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.10.zip",
+  "version": "1.0.11",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.11.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.10 - GrihoTools 2-column checkout with Dhaka inside/outside delivery fee switcher, product thumbnails in order review, Shovaas single product gallery & trust box, full WooCommerce hook compliance."
+  "changelog": "Release v1.0.11 - Dynamic quantity support for Buy Now, auto-resolve variable products on cards straight to checkout, touch-friendly +/- quantity steppers, mobile sticky buy bar, live 11-digit phone validation, and premium Thank You invoice layout."
 }

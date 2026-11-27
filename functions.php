@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.10' );
+define( 'SWIFT_WOO_VERSION', '1.0.11' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -267,6 +267,22 @@ if ( ! function_exists( 'swift_woo_buy_now' ) ) {
 		if ( ! empty( $_POST['variation'] ) && is_array( $_POST['variation'] ) ) {
 			foreach ( $_POST['variation'] as $key => $val ) {
 				$variation[ sanitize_key( $key ) ] = sanitize_text_field( wp_unslash( $val ) );
+			}
+		}
+
+		// If variable product without variation_id (e.g. clicked from card), auto-select first in-stock child
+		$product = wc_get_product( $product_id );
+		if ( $product && $product->is_type( 'variable' ) && ! $variation_id ) {
+			$children = $product->get_children();
+			if ( ! empty( $children ) ) {
+				foreach ( $children as $child_id ) {
+					$child_product = wc_get_product( $child_id );
+					if ( $child_product && $child_product->is_in_stock() ) {
+						$variation_id = $child_id;
+						$variation    = $child_product->get_variation_attributes();
+						break;
+					}
+				}
 			}
 		}
 
