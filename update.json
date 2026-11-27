@@ -1,8 +1,8 @@
 {
-  "version": "1.0.19",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.19.zip",
+  "version": "1.0.20",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.20.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.19 - 1-Screen ultra compact GrihoTools style checkout, verified 100% zero hook alterations, compact fields, delivery switcher, product thumbnails, and single-screen mobile layout."
+  "changelog": "Release v1.0.20 - 100% native WooCommerce core DOM hierarchy and all 10 core hooks intact, full Meta Pixel / PixelYourSite & payment gateway native compatibility, direct checkout redirection on Buy Now, removed review-order.php and footer modal, ultra-compact 1-screen GrihoTools style layout."
 }

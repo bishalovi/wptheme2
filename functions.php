@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.19' );
+define( 'SWIFT_WOO_VERSION', '1.0.20' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -61,7 +61,7 @@ if ( ! function_exists( 'swift_woo_enqueue' ) ) {
 			SWIFT_WOO_VERSION
 		);
 
-		// WooCommerce block styles & checkout scripts for popup modal
+		// WooCommerce block styles
 		if ( class_exists( 'WooCommerce' ) ) {
 			wp_enqueue_style(
 				'swift-woo-wc',
@@ -69,27 +69,6 @@ if ( ! function_exists( 'swift_woo_enqueue' ) ) {
 				array( 'woocommerce-general' ),
 				SWIFT_WOO_VERSION
 			);
-
-			// Enqueue native WooCommerce checkout script & localize for popup modal
-			if ( ! is_checkout() && ! is_order_received_page() ) {
-				wp_enqueue_script( 'wc-checkout' );
-				wp_enqueue_script( 'wc-country-select' );
-				wp_enqueue_script( 'wc-address-i18n' );
-
-				$checkout_params = array(
-					'ajax_url'                  => admin_url( 'admin-ajax.php' ),
-					'wc_ajax_url'               => class_exists( 'WC_AJAX' ) ? WC_AJAX::get_endpoint( '%%endpoint%%' ) : '',
-					'update_order_review_nonce' => wp_create_nonce( 'update-order-review' ),
-					'apply_coupon_nonce'        => wp_create_nonce( 'apply-coupon' ),
-					'remove_coupon_nonce'       => wp_create_nonce( 'remove-coupon' ),
-					'option_guest_checkout'     => get_option( 'woocommerce_enable_guest_checkout' ),
-					'checkout_url'              => class_exists( 'WC_AJAX' ) ? WC_AJAX::get_endpoint( 'checkout' ) : '',
-					'is_checkout'               => '1',
-					'debug_mode'                => defined( 'WP_DEBUG' ) && WP_DEBUG,
-					'i18n_checkout_error'       => esc_attr__( 'Error processing checkout. Please try again.', 'woocommerce' ),
-				);
-				wp_localize_script( 'wc-checkout', 'wc_checkout_params', $checkout_params );
-			}
 		}
 
 		// Main JS (deferred, non-blocking)

@@ -542,8 +542,15 @@ p.stock {
 }
 
 /* Hide messy SKU, Categories, Tags meta */
-.swift-single-product__summary .product_meta {
+.swift-single-product__summary .product_meta,
+.woocommerce div.product .product_meta,
+div.product_meta {
 	display: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	height: 0 !important;
+	line-height: 0 !important;
+	visibility: hidden !important;
 }
 
 .swift-single-product__summary form.cart {
@@ -824,26 +831,56 @@ p.stock {
 	line-height: 1.2;
 }
 
-/* 2-column checkout grid on desktop, 1-screen compact */
-.swift-checkout-grid {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: 8px;
+/* Checkout Form GrihoTools 1-Screen Architecture */
+form.woocommerce-checkout {
+	display: block;
 }
+
 @media (min-width: 768px) {
-	.swift-checkout-grid {
-		grid-template-columns: 1.05fr 0.95fr;
-		gap: 14px;
-		align-items: start;
+	form.woocommerce-checkout {
+		display: grid !important;
+		grid-template-columns: 1.05fr 0.95fr !important;
+		gap: 14px !important;
+		align-items: start !important;
+	}
+	form.woocommerce-checkout .col2-set#customer_details {
+		grid-column: 1 !important;
+		margin: 0 !important;
+	}
+	form.woocommerce-checkout #order_review_heading {
+		display: none !important;
+	}
+	form.woocommerce-checkout #order_review {
+		grid-column: 2 !important;
+		margin: 0 !important;
 	}
 }
 
-.swift-checkout-box {
-	background: #ffffff;
-	border: 1px solid var(--swift-border);
-	border-radius: 8px;
-	padding: 10px 12px;
-	box-shadow: 0 1px 3px rgba(0,0,0,.03);
+.woocommerce-checkout .col2-set#customer_details,
+.woocommerce-checkout #order_review {
+	background: #ffffff !important;
+	border: 1px solid var(--swift-border) !important;
+	border-radius: 8px !important;
+	padding: 10px 12px !important;
+	box-shadow: 0 1px 3px rgba(0,0,0,.03) !important;
+	margin-bottom: 10px !important;
+}
+
+.woocommerce-checkout .col2-set .col-1,
+.woocommerce-checkout .col2-set .col-2 {
+	float: none !important;
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+#order_review_heading {
+	font-size: .92rem !important;
+	font-weight: 700 !important;
+	color: var(--swift-text) !important;
+	margin: 0 0 6px !important;
+	padding-bottom: 4px !important;
+	border-bottom: 1px solid var(--swift-border) !important;
 }
 
 .swift-box-header {
