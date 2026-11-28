@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.24' );
+define( 'SWIFT_WOO_VERSION', '1.0.25' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -680,6 +680,14 @@ if ( ! function_exists( 'swift_woo_order_button_text' ) ) {
 	}
 }
 add_filter( 'woocommerce_order_button_text', 'swift_woo_order_button_text' );
+
+// Remove / suppress Privacy Policy notice on checkout (GrihoTools 1-screen compact)
+add_filter( 'woocommerce_get_privacy_policy_text', function( $text, $type ) {
+	if ( 'checkout' === $type ) {
+		return '';
+	}
+	return $text;
+}, 20, 2 );
 
 // Translate Shipping Package Name to Bengali
 add_filter( 'woocommerce_shipping_package_name', function() {

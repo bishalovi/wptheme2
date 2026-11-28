@@ -933,6 +933,8 @@ form.woocommerce-checkout > p:empty,
 .woocommerce-checkout-review-order-table thead,
 .swift-review-order-table thead,
 .woocommerce-shipping-destination,
+.woocommerce-privacy-policy-text,
+.woocommerce-terms-and-conditions-wrapper,
 #payment ul.payment_methods {
 	display: none !important;
 }

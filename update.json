@@ -1,8 +1,8 @@
 {
-  "version": "1.0.24",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.24.zip",
+  "version": "1.0.25",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.25.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.24 - Fixed desktop 2-column grid alignment with grid-row:1, added 1 and 2 step badge headers, valid W3C phrasing inside delivery area labels, Bengali translation fallback for English billing labels, and AJAX quantity stepper."
+  "changelog": "Release v1.0.25 - Removed privacy policy text from checkout for clean 1-screen experience, zero hook removal."
 }
