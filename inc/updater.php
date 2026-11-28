@@ -41,7 +41,12 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 		 */
 		public function get_remote_info( $bypass_cache = false ) {
 			$transient_key = 'swift_woo_update_cache_' . $this->theme_slug;
-			$force_check   = $bypass_cache || isset( $_GET['force-check'] ) || ( isset( $_GET['action'] ) && 'core-update' === $_GET['action'] );
+			$is_admin_check = is_admin() && (
+				( isset( $GLOBALS['pagenow'] ) && in_array( $GLOBALS['pagenow'], array( 'update-core.php', 'themes.php' ), true ) ) ||
+				isset( $_GET['force-check'] ) ||
+				( isset( $_GET['action'] ) && 'core-update' === $_GET['action'] )
+			);
+			$force_check   = $bypass_cache || $is_admin_check;
 
 			if ( ! $force_check ) {
 				$cached = get_transient( $transient_key );
@@ -83,7 +88,7 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 							$version
 						),
 					);
-					set_transient( $transient_key, $data, 3 * HOUR_IN_SECONDS );
+					set_transient( $transient_key, $data, 30 * MINUTE_IN_SECONDS );
 					return $data;
 				}
 			}
@@ -120,7 +125,7 @@ if ( ! class_exists( 'Swift_Woo_Theme_Updater' ) ) {
 				);
 			}
 
-			set_transient( $transient_key, $data, 3 * HOUR_IN_SECONDS );
+			set_transient( $transient_key, $data, 30 * MINUTE_IN_SECONDS );
 			return $data;
 		}
 
