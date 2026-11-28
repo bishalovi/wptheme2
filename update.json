@@ -1,8 +1,8 @@
 {
-  "version": "1.0.29",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.29.zip",
+  "version": "1.0.30",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.30.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.29 - Complete single product page enhancements: High-converting pill swatches with visible Bengali and English labels and active checkmark icons, Bengali numeral normalizer for package variations, styled dynamic variation prices, and clean suppression of default sidebar blog widgets without removing any WooCommerce hooks."
+  "changelog": "Release v1.0.30 - Fixed multiColorContainer initialization order, URL-encoded Bengali attribute matching, and instant admin updater check."
 }
