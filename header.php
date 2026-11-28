@@ -10,16 +10,9 @@ defined( 'ABSPATH' ) || exit;
 if ( ! has_action( 'wp_head', 'rel_canonical' ) && is_singular() ) {
 	echo '<link rel="canonical" href="' . esc_url( get_permalink() ) . '">' . "\n";
 }
-
-// Local Fonts Preload (Safe check)
-$bengali_font = get_template_directory() . '/assets/fonts/HindSiliguri-Regular.woff2';
-$inter_font   = get_template_directory() . '/assets/fonts/Inter-Regular.woff2';
-if ( file_exists( $bengali_font ) ) : ?>
-<link rel="preload" href="<?php echo esc_url( get_template_directory_uri() . '/assets/fonts/HindSiliguri-Regular.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
-<?php endif; ?>
-<?php if ( file_exists( $inter_font ) ) : ?>
-<link rel="preload" href="<?php echo esc_url( get_template_directory_uri() . '/assets/fonts/Inter-Regular.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
-<?php endif; ?>
+?>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <?php wp_head(); // OFFICIAL HOOK — never removed ?>
 </head>
 <body <?php body_class(); ?>>
@@ -92,6 +85,7 @@ if ( file_exists( $bengali_font ) ) : ?>
 	</nav>
 </header>
 
+<?php if ( ! is_product() && ! is_checkout() && ! is_order_received_page() ) : ?>
 <!-- Mobile Bottom Sticky Navigation -->
 <nav class="swift-mobile-bottom-nav" aria-label="<?php esc_attr_e( 'মোবাইল নেভিগেশন', 'swift-woo' ); ?>">
 	<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="swift-bottom-nav__item <?php echo is_front_page() ? 'active' : ''; ?>" aria-label="<?php esc_attr_e( 'হোম', 'swift-woo' ); ?>">
@@ -110,3 +104,4 @@ if ( file_exists( $bengali_font ) ) : ?>
 		<span><?php esc_html_e( 'কার্ট', 'swift-woo' ); ?></span>
 	</a>
 </nav>
+<?php endif; ?>

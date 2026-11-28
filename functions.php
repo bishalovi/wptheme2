@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.20' );
+define( 'SWIFT_WOO_VERSION', '1.0.21' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -600,7 +600,28 @@ add_filter( 'woocommerce_product_add_to_cart_text', function() {
 } );
 
 /* -----------------------------------------------------------------------
- * 15. INCLUDE MODULES
+ * 15. AUTO-FALLBACK GUTENBERG BLOCKS TO CLASSIC WOOCOMMERCE TEMPLATES
+ *     Ensures form-checkout.php, all 10 core hooks, PixelYourSite, and 1-screen GrihoTools layout
+ * --------------------------------------------------------------------- */
+if ( ! function_exists( 'swift_woo_classic_checkout_fallback' ) ) {
+	function swift_woo_classic_checkout_fallback( $content ) {
+		if ( is_checkout() && ! is_order_received_page() && ! is_wc_endpoint_url() ) {
+			if ( ( function_exists( 'has_block' ) && has_block( 'woocommerce/checkout' ) ) || strpos( $content, 'wp-block-woocommerce-checkout' ) !== false || strpos( $content, 'wp:woocommerce/checkout' ) !== false ) {
+				return do_shortcode( '[woocommerce_checkout]' );
+			}
+		}
+		if ( is_cart() && ! is_wc_endpoint_url() ) {
+			if ( ( function_exists( 'has_block' ) && has_block( 'woocommerce/cart' ) ) || strpos( $content, 'wp-block-woocommerce-cart' ) !== false || strpos( $content, 'wp:woocommerce/cart' ) !== false ) {
+				return do_shortcode( '[woocommerce_cart]' );
+			}
+		}
+		return $content;
+	}
+}
+add_filter( 'the_content', 'swift_woo_classic_checkout_fallback', 5 );
+
+/* -----------------------------------------------------------------------
+ * 16. INCLUDE MODULES
  * --------------------------------------------------------------------- */
 require_once SWIFT_WOO_DIR . '/inc/template-tags.php';
 require_once SWIFT_WOO_DIR . '/inc/updater.php';

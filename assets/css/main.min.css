@@ -202,7 +202,8 @@ input { font-size: 16px; } /* iOS no-zoom */
 	bottom: 0;
 	left: 0;
 	right: 0;
-	height: var(--swift-bottom-nav-h);
+	height: calc(var(--swift-bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+	padding-bottom: env(safe-area-inset-bottom, 0px);
 	background: #fff;
 	border-top: 1px solid var(--swift-border);
 	display: flex;
@@ -1235,11 +1236,15 @@ input.is-invalid {
 	right: 0;
 	background: #ffffff;
 	border-top: 1.5px solid var(--swift-border);
-	padding: 10px 16px;
+	padding: 8px 16px max(10px, env(safe-area-inset-bottom, 0px));
 	z-index: 1000;
 	box-shadow: 0 -3px 12px rgba(0,0,0,.1);
 	transform: translateY(100%);
 	transition: transform .25s ease-in-out;
+}
+body.single-product .swift-mobile-bottom-nav,
+body.woocommerce-checkout .swift-mobile-bottom-nav {
+	display: none !important;
 }
 .swift-sticky-buy-bar.is-visible {
 	transform: translateY(0);
