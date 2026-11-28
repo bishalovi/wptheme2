@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.39' );
+define( 'SWIFT_WOO_VERSION', '1.0.40' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -784,10 +784,14 @@ if ( ! function_exists( 'swift_woo_checkout_product_thumbnail' ) ) {
 			)
 		);
 		$qty = isset( $cart_item['quantity'] ) ? absint( $cart_item['quantity'] ) : 1;
-		$stepper = '<div class="swift-chk-stepper" data-cart-key="' . esc_attr( $cart_item_key ) . '">'
+		$trash_svg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
+		$stepper = '<div class="swift-chk-stepper-wrap">'
+			. '<div class="swift-chk-stepper" data-cart-key="' . esc_attr( $cart_item_key ) . '">'
 			. '<button type="button" class="swift-chk-qty-btn swift-chk-qty-minus" aria-label="Decrease">&minus;</button>'
 			. '<span class="swift-chk-qty-val">' . $qty . '</span>'
 			. '<button type="button" class="swift-chk-qty-btn swift-chk-qty-plus" aria-label="Increase">+</button>'
+			. '</div>'
+			. '<button type="button" class="swift-chk-remove-btn" data-cart-key="' . esc_attr( $cart_item_key ) . '" title="' . esc_attr__( 'পণ্যটি মুছুন', 'swift-woo' ) . '" aria-label="Remove item">' . $trash_svg . '</button>'
 			. '</div>';
 
 		return '<div class="swift-checkout-line-item">'
@@ -815,15 +819,21 @@ if ( ! function_exists( 'swift_woo_ajax_update_cart_qty' ) ) {
 		$quantity      = isset( $_POST['quantity'] ) ? intval( $_POST['quantity'] ) : 1;
 
 		if ( ! empty( $cart_item_key ) && WC()->cart && WC()->cart->get_cart_item( $cart_item_key ) ) {
-			if ( $quantity < 1 ) {
-				$quantity = 1;
+			if ( $quantity <= 0 ) {
+				WC()->cart->remove_cart_item( $cart_item_key );
+				wp_send_json_success( array(
+					'cart_item_key' => $cart_item_key,
+					'quantity'      => 0,
+					'cart_count'    => WC()->cart->get_cart_contents_count(),
+				) );
+			} else {
+				WC()->cart->set_quantity( $cart_item_key, $quantity, true );
+				wp_send_json_success( array(
+					'cart_item_key' => $cart_item_key,
+					'quantity'      => $quantity,
+					'cart_count'    => WC()->cart->get_cart_contents_count(),
+				) );
 			}
-			WC()->cart->set_quantity( $cart_item_key, $quantity, true );
-			wp_send_json_success( array(
-				'cart_item_key' => $cart_item_key,
-				'quantity'      => $quantity,
-				'cart_count'    => WC()->cart->get_cart_contents_count(),
-			) );
 		} else {
 			wp_send_json_error( array( 'message' => esc_html__( 'Cart item not found.', 'swift-woo' ) ) );
 		}
@@ -831,6 +841,27 @@ if ( ! function_exists( 'swift_woo_ajax_update_cart_qty' ) ) {
 }
 add_action( 'wp_ajax_swift_woo_update_cart_qty', 'swift_woo_ajax_update_cart_qty' );
 add_action( 'wp_ajax_nopriv_swift_woo_update_cart_qty', 'swift_woo_ajax_update_cart_qty' );
+
+// AJAX handler to remove cart item from checkout order review
+if ( ! function_exists( 'swift_woo_ajax_remove_cart_item' ) ) {
+	function swift_woo_ajax_remove_cart_item() {
+		check_ajax_referer( 'swift_woo_nonce', 'nonce' );
+
+		$cart_item_key = isset( $_POST['cart_item_key'] ) ? sanitize_text_field( wp_unslash( $_POST['cart_item_key'] ) ) : '';
+
+		if ( ! empty( $cart_item_key ) && WC()->cart && WC()->cart->get_cart_item( $cart_item_key ) ) {
+			WC()->cart->remove_cart_item( $cart_item_key );
+			wp_send_json_success( array(
+				'cart_item_key' => $cart_item_key,
+				'cart_count'    => WC()->cart->get_cart_contents_count(),
+			) );
+		} else {
+			wp_send_json_error( array( 'message' => esc_html__( 'Cart item not found.', 'swift-woo' ) ) );
+		}
+	}
+}
+add_action( 'wp_ajax_swift_woo_remove_cart_item', 'swift_woo_ajax_remove_cart_item' );
+add_action( 'wp_ajax_nopriv_swift_woo_remove_cart_item', 'swift_woo_ajax_remove_cart_item' );
 
 // Checkout Submit Button Text
 if ( ! function_exists( 'swift_woo_order_button_text' ) ) {
