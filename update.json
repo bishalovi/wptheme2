@@ -1,8 +1,8 @@
 {
-  "version": "1.0.36",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.36.zip",
+  "version": "1.0.37",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.37.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.36 - Replace emoji with inline SVG icon to prevent WordPress Twemoji expansion, fix card button height (38px fixed)."
+  "changelog": "Release v1.0.37 - Guaranteed single clean 'অর্ডার করুন' card button: hide legacy buy-now in loop cards, 100% responsive and elegant."
 }

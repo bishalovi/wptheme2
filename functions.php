@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.36' );
+define( 'SWIFT_WOO_VERSION', '1.0.37' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -365,6 +365,13 @@ if ( ! function_exists( 'swift_woo_custom_loop_add_to_cart_link' ) ) {
 	}
 }
 add_filter( 'woocommerce_loop_add_to_cart_link', 'swift_woo_custom_loop_add_to_cart_link', 10, 3 );
+
+if ( ! function_exists( 'swift_woo_custom_loop_add_to_cart_text' ) ) {
+	function swift_woo_custom_loop_add_to_cart_text( $text, $product ) {
+		return esc_html__( 'অর্ডার করুন', 'swift-woo' );
+	}
+}
+add_filter( 'woocommerce_product_add_to_cart_text', 'swift_woo_custom_loop_add_to_cart_text', 10, 2 );
 
 if ( ! function_exists( 'swift_woo_redirect_checkout_buy_now' ) ) {
 	function swift_woo_redirect_checkout_buy_now( $url ) {

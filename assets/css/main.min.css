@@ -345,32 +345,34 @@ ul.products li.product .price ins { text-decoration: none; }
  * PRODUCT CARD BUTTON: Single full-width "🛍️ অর্ডার করুন" (ichoicebd.com style)
  * ========================================================================== */
 ul.products li.product .swift-card-actions {
-	display: flex !important;
-	flex-direction: row !important;
+	display: block !important;
 	padding: 0 8px 10px !important;
 	margin-top: auto !important;
 	width: 100% !important;
 	box-sizing: border-box !important;
 }
 
+/* If legacy Buy Now button exists in cached HTML, hide it completely */
+ul.products li.product .swift-card-actions .swift-buy-now-btn {
+	display: none !important;
+}
+
 /* Single full-width card button */
 ul.products li.product .swift-card-actions a.button,
 ul.products li.product .swift-card-actions button.button,
 ul.products li.product .swift-card-actions .button,
-ul.products li.product .swift-card-actions .swift-loop-order-btn,
-ul.products li.product .swift-card-actions .swift-buy-now-btn {
-	flex: 1 1 100% !important;
+ul.products li.product .swift-card-actions .swift-loop-order-btn {
+	display: flex !important;
 	width: 100% !important;
-	display: inline-flex !important;
+	height: 38px !important;
+	min-height: 38px !important;
+	max-height: 38px !important;
 	align-items: center !important;
 	justify-content: center !important;
 	gap: 6px !important;
 	font-size: 14px !important;
 	font-weight: 700 !important;
 	padding: 0 10px !important;
-	height: 38px !important;
-	min-height: 38px !important;
-	max-height: 38px !important;
 	border-radius: var(--swift-radius) !important;
 	border: none !important;
 	background: var(--swift-primary) !important;
@@ -388,8 +390,7 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn {
 }
 ul.products li.product .swift-card-actions a.button:hover,
 ul.products li.product .swift-card-actions button.button:hover,
-ul.products li.product .swift-card-actions .swift-loop-order-btn:hover,
-ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
+ul.products li.product .swift-card-actions .swift-loop-order-btn:hover {
 	background: var(--swift-primary-dark, #c53030) !important;
 	box-shadow: 0 4px 10px rgba(229, 62, 62, 0.35) !important;
 }

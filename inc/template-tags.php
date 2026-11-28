@@ -64,18 +64,8 @@ if ( ! function_exists( 'swift_woo_loop_actions_open' ) ) {
 }
 add_action( 'woocommerce_after_shop_loop_item', 'swift_woo_loop_actions_open', 8 );
 
-/**
- * Hook Buy Now to Shop/Home product loop cards
- * Zero official hooks modified — purely additive.
- */
-if ( ! function_exists( 'swift_woo_add_loop_buy_now' ) ) {
-	function swift_woo_add_loop_buy_now() {
-		// Single button mode on shop/home cards (ichoicebd.com style).
-		// Official woocommerce_template_loop_add_to_cart handles the primary "🛍️ অর্ডার করুন" action.
-		return;
-	}
-}
-add_action( 'woocommerce_after_shop_loop_item', 'swift_woo_add_loop_buy_now', 15 );
+// Single button mode on shop/home cards (ichoicebd.com style).
+// Official woocommerce_template_loop_add_to_cart handles the primary "🛍️ অর্ডার করুন" action.
 
 if ( ! function_exists( 'swift_woo_loop_actions_close' ) ) {
 	function swift_woo_loop_actions_close() {
