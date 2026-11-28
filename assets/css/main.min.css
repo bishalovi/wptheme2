@@ -657,7 +657,6 @@ div.product_meta {
 /* Single product action buttons */
 .swift-single-product__summary .single_add_to_cart_button,
 .swift-single-product__summary .swift-buy-now-btn {
-	width: 100% !important;
 	border-radius: var(--swift-radius) !important;
 	cursor: pointer !important;
 	transition: .2s !important;
@@ -893,32 +892,43 @@ form.variations_form .quantity {
 	display: none !important;
 }
 
-/* Action Buttons Side-by-Side (Compact & Space-saving Daraz/Modern style) */
-.swift-single-product__summary form.cart .woocommerce-variation-add-to-cart,
-.swift-single-product__summary form.cart {
+/* Action Buttons Side-by-Side (Guaranteed row on both simple & variable products) */
+.swift-single-product__summary form.variations_form {
+	display: block !important;
+	width: 100% !important;
+}
+.swift-single-product__summary .single_variation_wrap {
+	display: block !important;
+	width: 100% !important;
+}
+.swift-single-product__summary form.cart:not(.variations_form),
+.swift-single-product__summary .woocommerce-variation-add-to-cart {
 	display: flex !important;
 	flex-direction: row !important;
 	flex-wrap: nowrap !important;
 	gap: 8px !important;
 	align-items: center !important;
+	justify-content: space-between !important;
 	width: 100% !important;
-	margin: 10px 0 14px !important;
+	margin: 12px 0 16px !important;
+	clear: both !important;
 }
 
 /* Button 1 (Left): Add to Cart (White background, Theme primary border/text, 46px) */
 .swift-single-product__summary .single_add_to_cart_button {
 	order: 1 !important;
 	flex: 1 1 45% !important;
-	width: auto !important;
+	width: 45% !important;
 	min-width: 0 !important;
+	max-width: 50% !important;
 	min-height: 46px !important;
 	height: 46px !important;
 	background: #ffffff !important;
 	border: 1.5px solid var(--swift-primary) !important;
 	color: var(--swift-primary) !important;
 	border-radius: 6px !important;
-	padding: 0 10px !important;
-	font-size: 14px !important;
+	padding: 0 6px !important;
+	font-size: 13.5px !important;
 	font-weight: 700 !important;
 	cursor: pointer !important;
 	display: inline-flex !important;
@@ -929,6 +939,7 @@ form.variations_form .quantity {
 	transition: all .2s ease !important;
 	box-sizing: border-box !important;
 	margin: 0 !important;
+	float: none !important;
 	white-space: nowrap !important;
 	line-height: 1 !important;
 }
@@ -942,16 +953,17 @@ form.variations_form .quantity {
 .swift-single-product__summary .swift-buy-now-btn {
 	order: 2 !important;
 	flex: 1 1 55% !important;
-	width: auto !important;
+	width: 55% !important;
 	min-width: 0 !important;
+	max-width: 55% !important;
 	min-height: 46px !important;
 	height: 46px !important;
 	background: #27ae60 !important;
 	color: #ffffff !important;
 	border: none !important;
 	border-radius: 6px !important;
-	padding: 0 12px !important;
-	font-size: 15px !important;
+	padding: 0 8px !important;
+	font-size: 14.5px !important;
 	font-weight: 800 !important;
 	cursor: pointer !important;
 	display: inline-flex !important;
@@ -962,6 +974,7 @@ form.variations_form .quantity {
 	transition: background .2s ease !important;
 	box-sizing: border-box !important;
 	margin: 0 !important;
+	float: none !important;
 	white-space: nowrap !important;
 	line-height: 1 !important;
 }
