@@ -288,25 +288,25 @@ ul.products.swift-products-grid li.product {
 }
 ul.products li.product:hover { box-shadow: var(--swift-shadow); }
 
-/* Stable Product Image (1:1 Ratio, No Movement/Nora-chora) */
+/* Stable Product Image & Link Layout */
 ul.products li.product .woocommerce-loop-product__link {
-	display: block;
+	display: flex;
+	flex-direction: column;
 	width: 100%;
-	aspect-ratio: 1 / 1;
-	position: relative;
-	overflow: hidden;
-	background: var(--swift-bg-alt);
+	text-decoration: none;
+	color: inherit;
 }
 ul.products li.product img,
 ul.products li.product .woocommerce-loop-product__link img {
 	width: 100% !important;
-	height: 100% !important;
+	height: auto !important;
 	aspect-ratio: 1 / 1 !important;
 	object-fit: cover !important;
 	display: block !important;
 	margin: 0 !important;
 	transition: none !important;
 	transform: none !important;
+	background: var(--swift-bg-alt);
 }
 
 /* HIDE Sale Badges cleanly via CSS (Zero hook removal) */
@@ -842,6 +842,16 @@ form.woocommerce-checkout > p:empty,
 	display: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
+}
+
+.woocommerce-checkout .entry-header,
+.woocommerce-checkout #billing_phone_field .optional {
+	display: none !important;
+}
+.woocommerce-checkout #billing_phone_field label::after {
+	content: " *";
+	color: var(--swift-primary);
+	font-weight: 700;
 }
 
 #order_review_heading {

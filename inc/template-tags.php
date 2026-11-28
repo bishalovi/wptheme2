@@ -141,7 +141,7 @@ if ( ! function_exists( 'swift_woo_cod_badge' ) ) {
 				</div>
 				<div class="swift-trust-text">
 					<strong><?php esc_html_e( 'ডেলিভারি চার্জ', 'swift-woo' ); ?></strong>
-					<span><?php esc_html_e( 'ঢাকার ভিতরে ৳ ৭০ | ঢাকার বাইরে ৳ ১২০', 'swift-woo' ); ?></span>
+					<span><?php esc_html_e( 'ঢাকার ভিতরে ৳ ৭০ | ঢাকার বাইরে ৳ ১৩০', 'swift-woo' ); ?></span>
 				</div>
 			</div>
 			<div class="swift-trust-item">

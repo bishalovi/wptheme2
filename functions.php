@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.26' );
+define( 'SWIFT_WOO_VERSION', '1.0.27' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -497,6 +497,13 @@ if ( ! function_exists( 'swift_woo_customize_billing_fields' ) ) {
 	}
 }
 add_filter( 'woocommerce_billing_fields', 'swift_woo_customize_billing_fields', 999 );
+
+add_filter( 'woocommerce_default_address_fields', function( $fields ) {
+	if ( isset( $fields['address_1'] ) ) {
+		$fields['address_1']['placeholder'] = __( 'বাসা/রোড নং, এলাকা/থানা এবং জেলার নাম লিখুন', 'swift-woo' );
+	}
+	return $fields;
+}, 999 );
 
 // Default country to Bangladesh & default city to Dhaka
 add_filter( 'default_checkout_billing_country', function() { return 'BD'; } );
