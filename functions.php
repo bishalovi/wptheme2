@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.22' );
+define( 'SWIFT_WOO_VERSION', '1.0.23' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -480,32 +480,49 @@ add_filter( 'default_checkout_billing_state', function() { return 'BD-13'; } );
  * --------------------------------------------------------------------- */
 if ( ! function_exists( 'swift_woo_render_delivery_area_selector' ) ) {
 	function swift_woo_render_delivery_area_selector( $checkout ) {
-		// If WooCommerce core shipping methods are configured, do not render duplicate selector
+		$inside_label    = __( 'ঢাকার ভিতরে', 'swift-woo' );
+		$inside_price    = '৳ ৭০';
+		$outside_label   = __( 'ঢাকার বাইরে', 'swift-woo' );
+		$outside_price   = '৳ ১৩০';
+		$inside_rate_id  = '';
+		$outside_rate_id = '';
+
+		// If WooCommerce core shipping methods exist, get dynamic prices & IDs
 		$packages = ( function_exists( 'WC' ) && WC()->shipping() ) ? WC()->shipping()->get_packages() : array();
 		if ( ! empty( $packages ) && ! empty( $packages[0]['rates'] ) ) {
-			return;
+			foreach ( $packages[0]['rates'] as $rate_id => $rate ) {
+				$label = $rate->get_label();
+				$cost  = intval( $rate->get_cost() );
+				if ( mb_strpos( $label, 'ভিতরে' ) !== false || mb_strpos( $label, 'inside' ) !== false ) {
+					$inside_price   = '৳ ' . $cost;
+					$inside_rate_id = $rate_id;
+				} elseif ( mb_strpos( $label, 'বাহিরে' ) !== false || mb_strpos( $label, 'বাইরে' ) !== false || mb_strpos( $label, 'outside' ) !== false ) {
+					$outside_price   = '৳ ' . $cost;
+					$outside_rate_id = $rate_id;
+				}
+			}
 		}
 
 		$current_area = WC()->session ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
 		?>
 		<div class="swift-delivery-area-box" id="swift-delivery-area-box">
 			<label class="swift-area-box-title">
-				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
 				<span><?php esc_html_e( 'ডেলিভারি এরিয়া বেছে নিন *', 'swift-woo' ); ?></span>
 			</label>
 			<div class="swift-area-options">
-				<label class="swift-area-option <?php echo ( $current_area === 'inside_dhaka' ) ? 'is-selected' : ''; ?>">
-					<input type="radio" name="swift_delivery_area" value="inside_dhaka" <?php checked( $current_area, 'inside_dhaka' ); ?>>
+				<label class="swift-area-option <?php echo ( $current_area === 'inside_dhaka' ) ? 'is-selected' : ''; ?>" data-rate-id="<?php echo esc_attr( $inside_rate_id ); ?>">
+					<input type="radio" name="swift_delivery_area" value="inside_dhaka" data-rate-id="<?php echo esc_attr( $inside_rate_id ); ?>" <?php checked( $current_area, 'inside_dhaka' ); ?>>
 					<div class="swift-area-option__body">
-						<span class="swift-area-option__name"><?php esc_html_e( 'ঢাকার ভিতরে', 'swift-woo' ); ?></span>
-						<span class="swift-area-option__price">৳ ৭০</span>
+						<span class="swift-area-option__name"><?php echo esc_html( $inside_label ); ?></span>
+						<span class="swift-area-option__price"><?php echo esc_html( $inside_price ); ?></span>
 					</div>
 				</label>
-				<label class="swift-area-option <?php echo ( $current_area === 'outside_dhaka' ) ? 'is-selected' : ''; ?>">
-					<input type="radio" name="swift_delivery_area" value="outside_dhaka" <?php checked( $current_area, 'outside_dhaka' ); ?>>
+				<label class="swift-area-option <?php echo ( $current_area === 'outside_dhaka' ) ? 'is-selected' : ''; ?>" data-rate-id="<?php echo esc_attr( $outside_rate_id ); ?>">
+					<input type="radio" name="swift_delivery_area" value="outside_dhaka" data-rate-id="<?php echo esc_attr( $outside_rate_id ); ?>" <?php checked( $current_area, 'outside_dhaka' ); ?>>
 					<div class="swift-area-option__body">
-						<span class="swift-area-option__name"><?php esc_html_e( 'ঢাকার বাইরে', 'swift-woo' ); ?></span>
-						<span class="swift-area-option__price">৳ ১২০</span>
+						<span class="swift-area-option__name"><?php echo esc_html( $outside_label ); ?></span>
+						<span class="swift-area-option__price"><?php echo esc_html( $outside_price ); ?></span>
 					</div>
 				</label>
 			</div>
@@ -536,13 +553,13 @@ if ( ! function_exists( 'swift_woo_apply_delivery_area_fee' ) ) {
 			return;
 		}
 		// If WooCommerce shipping rates are already active, let them handle it
-		$packages = WC()->shipping()->get_packages();
+		$packages = ( function_exists( 'WC' ) && WC()->shipping() ) ? WC()->shipping()->get_packages() : array();
 		if ( ! empty( $packages ) && ! empty( $packages[0]['rates'] ) ) {
 			return;
 		}
 
 		$area  = WC()->session ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
-		$fee   = ( $area === 'outside_dhaka' ) ? 120 : 70;
+		$fee   = ( $area === 'outside_dhaka' ) ? 130 : 70;
 		$label = ( $area === 'outside_dhaka' ) ? __( 'ডেলিভারি চার্জ (ঢাকার বাইরে)', 'swift-woo' ) : __( 'ডেলিভারি চার্জ (ঢাকার ভিতরে)', 'swift-woo' );
 		$cart->add_fee( $label, $fee, false );
 	}
@@ -553,14 +570,14 @@ add_action( 'woocommerce_cart_calculate_fees', 'swift_woo_apply_delivery_area_fe
 if ( ! function_exists( 'swift_woo_save_delivery_area_order_meta' ) ) {
 	function swift_woo_save_delivery_area_order_meta( $order ) {
 		$area  = WC()->session ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
-		$label = ( $area === 'outside_dhaka' ) ? __( 'ঢাকার বাইরে (৳ ১২০)', 'swift-woo' ) : __( 'ঢাকার ভিতরে (৳ ৭০)', 'swift-woo' );
+		$label = ( $area === 'outside_dhaka' ) ? __( 'ঢাকার বাইরে (৳ ১৩০)', 'swift-woo' ) : __( 'ঢাকার ভিতরে (৳ ৭০)', 'swift-woo' );
 		$order->add_meta_data( __( 'ডেলিভারি এরিয়া', 'swift-woo' ), $label, true );
 	}
 }
 add_action( 'woocommerce_checkout_create_order', 'swift_woo_save_delivery_area_order_meta', 10, 1 );
 
 /* -----------------------------------------------------------------------
- * 14. CHECKOUT ORDER REVIEW THUMBNAIL (GrihoTools style)
+ * 14. CHECKOUT ORDER REVIEW THUMBNAIL & STEPPER (GrihoTools style)
  * --------------------------------------------------------------------- */
 if ( ! function_exists( 'swift_woo_checkout_product_thumbnail' ) ) {
 	function swift_woo_checkout_product_thumbnail( $name, $cart_item, $cart_item_key ) {
@@ -572,17 +589,61 @@ if ( ! function_exists( 'swift_woo_checkout_product_thumbnail' ) ) {
 			return $name;
 		}
 		$thumb = $product->get_image(
-			array( 56, 56 ),
+			array( 42, 42 ),
 			array(
 				'class'   => 'swift-checkout-thumb',
 				'loading' => 'lazy',
 				'alt'     => esc_attr( $product->get_name() ),
 			)
 		);
-		return '<div class="swift-checkout-line-item">' . $thumb . '<div class="swift-checkout-item-details">' . $name . '</div></div>';
+		$qty = isset( $cart_item['quantity'] ) ? absint( $cart_item['quantity'] ) : 1;
+		$stepper = '<div class="swift-chk-stepper" data-cart-key="' . esc_attr( $cart_item_key ) . '">'
+			. '<button type="button" class="swift-chk-qty-btn swift-chk-qty-minus" aria-label="Decrease">&minus;</button>'
+			. '<span class="swift-chk-qty-val">' . $qty . '</span>'
+			. '<button type="button" class="swift-chk-qty-btn swift-chk-qty-plus" aria-label="Increase">+</button>'
+			. '</div>';
+
+		return '<div class="swift-checkout-line-item">'
+			. '<div class="swift-checkout-thumb-wrap">' . $thumb . '</div>'
+			. '<div class="swift-checkout-item-details">'
+			. '<span class="swift-chk-item-name">' . $name . '</span>'
+			. $stepper
+			. '</div>'
+			. '</div>';
 	}
 }
 add_filter( 'woocommerce_cart_item_name', 'swift_woo_checkout_product_thumbnail', 10, 3 );
+
+// Hide duplicate quantity in checkout table since stepper handles it
+add_filter( 'woocommerce_checkout_cart_item_quantity', function( $html, $cart_item, $cart_item_key ) {
+	return '';
+}, 10, 3 );
+
+// AJAX handler to update checkout cart item quantity
+if ( ! function_exists( 'swift_woo_ajax_update_cart_qty' ) ) {
+	function swift_woo_ajax_update_cart_qty() {
+		check_ajax_referer( 'swift_woo_nonce', 'nonce' );
+
+		$cart_item_key = isset( $_POST['cart_item_key'] ) ? sanitize_text_field( wp_unslash( $_POST['cart_item_key'] ) ) : '';
+		$quantity      = isset( $_POST['quantity'] ) ? intval( $_POST['quantity'] ) : 1;
+
+		if ( ! empty( $cart_item_key ) && WC()->cart && WC()->cart->get_cart_item( $cart_item_key ) ) {
+			if ( $quantity < 1 ) {
+				$quantity = 1;
+			}
+			WC()->cart->set_quantity( $cart_item_key, $quantity, true );
+			wp_send_json_success( array(
+				'cart_item_key' => $cart_item_key,
+				'quantity'      => $quantity,
+				'cart_count'    => WC()->cart->get_cart_contents_count(),
+			) );
+		} else {
+			wp_send_json_error( array( 'message' => esc_html__( 'Cart item not found.', 'swift-woo' ) ) );
+		}
+	}
+}
+add_action( 'wp_ajax_swift_woo_update_cart_qty', 'swift_woo_ajax_update_cart_qty' );
+add_action( 'wp_ajax_nopriv_swift_woo_update_cart_qty', 'swift_woo_ajax_update_cart_qty' );
 
 // Checkout Submit Button Text
 if ( ! function_exists( 'swift_woo_order_button_text' ) ) {
