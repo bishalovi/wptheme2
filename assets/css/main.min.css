@@ -777,12 +777,10 @@ div.product_meta {
 .variations_form table.variations td.value {
 	margin-bottom: 12px !important;
 }
-.variations_form .reset_variations {
-	display: inline-block;
-	margin-top: 4px;
-	font-size: .8rem;
-	color: var(--swift-text-muted);
-	text-decoration: underline;
+.variations_form .reset_variations,
+.reset_variations,
+.reset_variations_alert {
+	display: none !important;
 }
 
 .swift-swatch-label {

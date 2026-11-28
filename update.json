@@ -1,8 +1,8 @@
 {
-  "version": "1.0.30",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.30.zip",
+  "version": "1.0.31",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.31.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.30 - Fixed multiColorContainer initialization order, URL-encoded Bengali attribute matching, and instant admin updater check."
+  "changelog": "Release v1.0.31 - Polished variation UI: hidden English Clear text link, and seamless single-color row toggle when multi-piece package (2/3 pcs) is selected for clean, non-duplicated UX."
 }
