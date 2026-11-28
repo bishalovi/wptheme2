@@ -16,7 +16,7 @@ if ( ! function_exists( 'swift_woo_order_now_button' ) ) {
 		if ( ! $the_product || ! is_a( $the_product, 'WC_Product' ) ) {
 			return;
 		}
-		$label = esc_html( get_theme_mod( 'swift_order_btn_label', 'অর্ডার করুন' ) );
+		$label = esc_html( get_theme_mod( 'swift_order_btn_label', '⚡ এখনই অর্ডার করুন' ) );
 		?>
 		<button
 			type="button"
