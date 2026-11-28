@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.28' );
+define( 'SWIFT_WOO_VERSION', '1.0.29' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -351,9 +351,11 @@ add_filter( 'woocommerce_add_cart_item_data', 'swift_woo_add_color_cart_data', 1
 if ( ! function_exists( 'swift_woo_display_color_cart' ) ) {
 	function swift_woo_display_color_cart( $item_data, $cart_item ) {
 		if ( ! empty( $cart_item['swift_selected_colors'] ) ) {
+			$bn_ordinals = array( '১ম', '২য়', '৩য়', '৪র্থ', '৫ম', '৬ষ্ঠ', '৭ম', '৮ম', '৯ম', '১০ম' );
 			foreach ( $cart_item['swift_selected_colors'] as $i => $color ) {
+				$ord = isset( $bn_ordinals[ $i ] ) ? $bn_ordinals[ $i ] : ( ( $i + 1 ) . 'তম' );
 				$item_data[] = array(
-					'key'   => esc_html( sprintf( __( 'Color %d', 'swift-woo' ), absint( $i ) + 1 ) ),
+					'key'   => esc_html( $ord . ' পিসের কালার' ),
 					'value' => esc_html( $color ),
 				);
 			}
@@ -366,9 +368,11 @@ add_filter( 'woocommerce_get_item_data', 'swift_woo_display_color_cart', 10, 2 )
 if ( ! function_exists( 'swift_woo_save_color_order_meta' ) ) {
 	function swift_woo_save_color_order_meta( $item, $cart_item_key, $values, $order ) {
 		if ( ! empty( $values['swift_selected_colors'] ) ) {
+			$bn_ordinals = array( '১ম', '২য়', '৩য়', '৪র্থ', '৫ম', '৬ষ্ঠ', '৭ম', '৮ম', '৯ম', '১০ম' );
 			foreach ( $values['swift_selected_colors'] as $i => $color ) {
+				$ord = isset( $bn_ordinals[ $i ] ) ? $bn_ordinals[ $i ] : ( ( $i + 1 ) . 'তম' );
 				$item->add_meta_data(
-					esc_html( sprintf( __( 'Color %d', 'swift-woo' ), absint( $i ) + 1 ) ),
+					esc_html( $ord . ' পিসের কালার' ),
 					esc_html( $color ),
 					true
 				);

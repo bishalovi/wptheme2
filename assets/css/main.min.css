@@ -753,52 +753,186 @@ div.product_meta {
 }
 
 /* ==========================================================================
- * VARIATION SWATCHES
+ * VARIATION SWATCHES & PILL BUTTONS (ichoicebd.com style)
  * ========================================================================== */
+.variations_form table.variations {
+	width: 100% !important;
+	border: none !important;
+	margin: 8px 0 !important;
+	border-collapse: collapse !important;
+}
+.variations_form table.variations tbody,
+.variations_form table.variations tr,
+.variations_form table.variations td,
+.variations_form table.variations th {
+	display: block !important;
+	width: 100% !important;
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+.variations_form table.variations th.label {
+	display: none !important;
+}
+.variations_form table.variations td.value {
+	margin-bottom: 12px !important;
+}
+.variations_form .reset_variations {
+	display: inline-block;
+	margin-top: 4px;
+	font-size: .8rem;
+	color: var(--swift-text-muted);
+	text-decoration: underline;
+}
+
+.swift-swatch-label {
+	font-size: .9rem;
+	color: var(--swift-text);
+	font-weight: 500;
+	margin-bottom: 6px;
+}
+.swift-swatch-label .swift-attr-name {
+	color: var(--swift-text-muted);
+	font-weight: 600;
+}
+.swift-swatch-label .swift-attr-val {
+	color: var(--swift-text);
+	font-weight: 700;
+}
+
+.swift-swatch-buttons,
 .swift-color-swatches,
 .swift-pis-buttons {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
-	margin: 8px 0;
+	margin: 4px 0 8px;
 }
-.swift-color-swatch {
-	width: 32px;
-	height: 32px;
-	border-radius: 50%;
-	border: 2px solid transparent;
-	cursor: pointer;
-	transition: .2s;
-	outline: none;
-	flex-shrink: 0;
-}
-.swift-color-swatch.is-active {
-	outline: 2px solid var(--swift-primary);
-	outline-offset: 2px;
-}
-.swift-color-swatch.is-disabled { opacity: .4; cursor: not-allowed; }
 
-.swift-pis-btn {
-	padding: 8px 16px;
+.swift-swatch-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 7px 14px;
 	border: 1.5px solid var(--swift-border);
-	border-radius: var(--swift-radius);
-	background: #fff;
+	border-radius: 6px;
+	background: #ffffff;
 	cursor: pointer;
+	font-family: inherit;
+	font-size: .88rem;
 	font-weight: 600;
-	font-size: .9rem;
-	transition: .2s;
+	color: var(--swift-text);
+	transition: all .2s ease;
+	outline: none;
+	user-select: none;
+	position: relative;
 }
-.swift-pis-btn.is-active {
-	border-color: var(--swift-primary);
-	background: rgba(229,62,62,.07);
+.swift-swatch-pill:hover {
+	border-color: #cbd5e0;
+	background: var(--swift-bg-alt);
+}
+.swift-swatch-pill.is-active {
+	border-color: var(--swift-primary) !important;
+	background: #fff5f5 !important;
+	color: var(--swift-primary) !important;
+	font-weight: 700 !important;
+	box-shadow: 0 0 0 1px var(--swift-primary) inset;
+}
+.swift-swatch-pill.is-disabled {
+	opacity: .4;
+	cursor: not-allowed;
+	text-decoration: line-through;
+	background: #f7fafc;
+	border-color: #e2e8f0;
+}
+
+.swift-swatch-dot {
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	display: inline-block;
+	flex-shrink: 0;
+	border: 1px solid rgba(0,0,0,.15);
+	box-shadow: inset 0 0 1px rgba(0,0,0,.2);
+}
+
+.swift-swatch-text {
+	line-height: 1.2;
+}
+
+.swift-swatch-check {
+	display: none;
+	font-size: .75rem;
+	line-height: 1;
+	font-weight: 800;
+	margin-left: 2px;
 	color: var(--swift-primary);
 }
-.swift-pis-btn.is-disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
+.swift-swatch-pill.is-active .swift-swatch-check {
+	display: inline-block;
+}
 
-.swift-swatch-label { font-size: .85rem; color: var(--swift-text-muted); font-weight: 500; }
-#swift-multi-color-container { margin-top: 12px; }
-.swift-extra-color-row { margin-bottom: 10px; }
-.swift-extra-color-row label { font-size: .85rem; font-weight: 600; display: block; margin-bottom: 6px; }
+/* Extra multi-color selection rows */
+#swift-multi-color-container {
+	margin: 10px 0 14px;
+	padding: 10px 12px;
+	background: #fafafa;
+	border: 1px dashed var(--swift-border);
+	border-radius: var(--swift-radius);
+}
+.swift-extra-color-row {
+	margin-bottom: 10px;
+}
+.swift-extra-color-row:last-child {
+	margin-bottom: 0;
+}
+.swift-extra-color-row label {
+	font-size: .88rem;
+	font-weight: 600;
+	color: var(--swift-text);
+	display: block;
+	margin-bottom: 6px;
+}
+
+/* WooCommerce Dynamic Variation Price & Wrap */
+.single_variation_wrap {
+	margin-top: 6px;
+}
+.single_variation {
+	margin-bottom: 8px;
+}
+.single_variation .woocommerce-variation-price {
+	font-size: 1.45rem !important;
+	font-weight: 800 !important;
+	color: var(--swift-primary) !important;
+	margin-bottom: 6px !important;
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+}
+.single_variation .woocommerce-variation-price ins {
+	text-decoration: none;
+	color: var(--swift-primary) !important;
+}
+.single_variation .woocommerce-variation-price del {
+	font-size: 1.05rem;
+	color: var(--swift-text-muted);
+	font-weight: 400;
+}
+.single_variation .woocommerce-variation-availability {
+	font-size: .85rem;
+	font-weight: 600;
+	margin-bottom: 6px;
+}
+.single_variation .woocommerce-variation-availability .stock.out-of-stock {
+	color: var(--swift-primary);
+}
+
+/* Hide default WordPress blog sidebar on Single Product page (Zero hook removal) */
+.single-product #secondary,
+.single-product .widget-area {
+	display: none !important;
+}
 
 /* ==========================================================================
  * CHECKOUT: GRIHOTOOLS.COM HIGH-CONVERTING STYLE (100% HOOK SAFE, 1-SCREEN COMPACT)
