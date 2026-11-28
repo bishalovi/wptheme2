@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.33' );
+define( 'SWIFT_WOO_VERSION', '1.0.34' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -337,9 +337,15 @@ if ( ! function_exists( 'swift_woo_add_color_cart_data' ) ) {
 		if ( isset( $_POST['swift_colors'] ) && is_array( $_POST['swift_colors'] ) ) {
 			$colors = array();
 			foreach ( $_POST['swift_colors'] as $i => $color ) {
-				$colors[ absint( $i ) ] = sanitize_text_field( wp_unslash( $color ) );
+				$c = sanitize_text_field( wp_unslash( $color ) );
+				$c = urldecode( $c );
+				$c = str_replace( array( '-', '_' ), ' ', $c );
+				$c = trim( $c );
+				if ( ! empty( $c ) ) {
+					$colors[ absint( $i ) ] = $c;
+				}
 			}
-			if ( ! empty( $colors ) ) {
+			if ( count( $colors ) > 1 ) {
 				$cart_item_data['swift_selected_colors'] = $colors;
 			}
 		}
@@ -350,7 +356,7 @@ add_filter( 'woocommerce_add_cart_item_data', 'swift_woo_add_color_cart_data', 1
 
 if ( ! function_exists( 'swift_woo_display_color_cart' ) ) {
 	function swift_woo_display_color_cart( $item_data, $cart_item ) {
-		if ( ! empty( $cart_item['swift_selected_colors'] ) ) {
+		if ( ! empty( $cart_item['swift_selected_colors'] ) && count( $cart_item['swift_selected_colors'] ) > 1 ) {
 			$bn_ordinals = array( '১ম', '২য়', '৩য়', '৪র্থ', '৫ম', '৬ষ্ঠ', '৭ম', '৮ম', '৯ম', '১০ম' );
 			foreach ( $cart_item['swift_selected_colors'] as $i => $color ) {
 				$ord = isset( $bn_ordinals[ $i ] ) ? $bn_ordinals[ $i ] : ( ( $i + 1 ) . 'তম' );
@@ -367,7 +373,7 @@ add_filter( 'woocommerce_get_item_data', 'swift_woo_display_color_cart', 10, 2 )
 
 if ( ! function_exists( 'swift_woo_save_color_order_meta' ) ) {
 	function swift_woo_save_color_order_meta( $item, $cart_item_key, $values, $order ) {
-		if ( ! empty( $values['swift_selected_colors'] ) ) {
+		if ( ! empty( $values['swift_selected_colors'] ) && count( $values['swift_selected_colors'] ) > 1 ) {
 			$bn_ordinals = array( '১ম', '২য়', '৩য়', '৪র্থ', '৫ম', '৬ষ্ঠ', '৭ম', '৮ম', '৯ম', '১০ম' );
 			foreach ( $values['swift_selected_colors'] as $i => $color ) {
 				$ord = isset( $bn_ordinals[ $i ] ) ? $bn_ordinals[ $i ] : ( ( $i + 1 ) . 'তম' );
@@ -621,7 +627,15 @@ if ( ! function_exists( 'swift_woo_render_delivery_area_selector' ) ) {
 			}
 		}
 
-		$current_area = WC()->session ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
+		$chosen_methods = ( function_exists( 'WC' ) && WC()->session ) ? WC()->session->get( 'chosen_shipping_methods' ) : array();
+		$chosen_method  = ! empty( $chosen_methods ) ? $chosen_methods[0] : '';
+		if ( $outside_rate_id && $chosen_method === $outside_rate_id ) {
+			$current_area = 'outside_dhaka';
+		} elseif ( $inside_rate_id && $chosen_method === $inside_rate_id ) {
+			$current_area = 'inside_dhaka';
+		} else {
+			$current_area = ( function_exists( 'WC' ) && WC()->session ) ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
+		}
 		?>
 		<div class="swift-delivery-area-box" id="swift-delivery-area-box">
 			<div class="swift-area-box-title">

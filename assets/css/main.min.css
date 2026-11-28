@@ -401,16 +401,30 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
  * ========================================================================== */
 .swift-single-product__wrapper {
 	display: grid;
-	grid-template-columns: 1fr;
+	grid-template-columns: minmax(0, 1fr) !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	overflow-x: hidden !important;
 	gap: 20px;
 	padding: 8px 0 20px;
 }
 
-/* Single product gallery — override WooCommerce default 48% float */
+/* Single product gallery & summary — zero overflow guarantee */
 .swift-single-product__gallery,
-.swift-single-product__summary {
+.swift-single-product__summary,
+.swift-single-product__summary form.variations_form {
 	width: 100% !important;
+	max-width: 100% !important;
+	min-width: 0 !important;
 	float: none !important;
+	box-sizing: border-box !important;
+}
+
+/* Hide default theme-compat sidebar on single product */
+.single-product #sidebar,
+.single-product #secondary,
+.single-product .widget-area {
+	display: none !important;
 }
 
 .swift-single-product__gallery .woocommerce-product-gallery {
@@ -741,7 +755,9 @@ div.product_meta {
 .swift-swatch-label,
 .variations_form .reset_variations,
 .reset_variations,
-.reset_variations_alert {
+.reset_variations_alert,
+a.reset_variations,
+.woocommerce-reset-variations {
 	display: none !important;
 }
 .variations_form table.variations td.value {
@@ -1603,7 +1619,7 @@ body.woocommerce-checkout .swift-mobile-bottom-nav {
 		grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
 		gap: 16px !important;
 	}
-	.swift-single-product__wrapper { grid-template-columns: 1fr 1fr; gap: 36px; }
+	.swift-single-product__wrapper { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 36px; }
 	.swift-trust-box {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
