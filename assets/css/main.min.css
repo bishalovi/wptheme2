@@ -576,8 +576,8 @@ div.product_meta {
 	margin: 6px 0 8px !important;
 }
 
-.swift-single-product__summary form.cart .quantity,
-.woocommerce .quantity {
+.woocommerce-cart-form .quantity,
+.woocommerce-mini-cart-item .quantity {
 	margin: 0 !important;
 	display: inline-flex !important;
 	align-items: center !important;
@@ -850,8 +850,10 @@ a.reset_variations,
 }
 
 /* Hide raw quantity spinner on single product (ichoicebd style) */
+.single-product .quantity,
 .swift-single-product__summary form.cart .quantity,
-.woocommerce div.product form.cart .quantity {
+.woocommerce div.product form.cart .quantity,
+form.variations_form .quantity {
 	display: none !important;
 }
 
@@ -860,9 +862,9 @@ a.reset_variations,
 .swift-single-product__summary form.cart {
 	display: flex !important;
 	flex-direction: column !important;
-	gap: 8px !important;
+	gap: 10px !important;
 	width: 100% !important;
-	margin: 6px 0 12px !important;
+	margin: 8px 0 14px !important;
 }
 
 /* Row 1 button: ⚡ এখনই অর্ডার করুন (Green #27ae60, Top) */
@@ -893,16 +895,16 @@ a.reset_variations,
 	background: #219653 !important;
 }
 
-/* Row 2 button: Add to Cart (Bottom) */
+/* Row 2 button: Add to Cart (Bottom, Solid Red/Primary with white text like ichoicebd) */
 .swift-single-product__summary .single_add_to_cart_button {
 	order: 2 !important;
 	width: 100% !important;
 	min-height: 46px !important;
 	height: 46px !important;
 	flex: 0 0 46px !important;
-	background: #ffffff !important;
-	border: 2px solid var(--swift-primary) !important;
-	color: var(--swift-primary) !important;
+	background: var(--swift-primary) !important;
+	border: none !important;
+	color: #ffffff !important;
 	border-radius: 6px !important;
 	padding: 0 16px !important;
 	font-size: 16px !important;
@@ -911,13 +913,13 @@ a.reset_variations,
 	display: inline-flex !important;
 	align-items: center !important;
 	justify-content: center !important;
-	box-shadow: 0 2px 8px rgba(229, 62, 62, 0.15) !important;
+	box-shadow: 0 3px 10px rgba(229, 62, 62, 0.25) !important;
 	transition: background .2s !important;
 	box-sizing: border-box !important;
 	margin: 0 !important;
 }
 .swift-single-product__summary .single_add_to_cart_button:hover {
-	background: #fff5f5 !important;
+	background: var(--swift-primary-dark, #c53030) !important;
 }
 
 /* WooCommerce Dynamic Variation Price & Wrap */
