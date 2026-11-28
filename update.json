@@ -1,8 +1,8 @@
 {
-  "version": "1.0.34",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.34.zip",
+  "version": "1.0.35",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.35.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.34 - Complete product page refinement: 0 mobile overflow, instant variation price update, multi-color cart persistence with Bengali labels, hide #sidebar on single product, exact 1:1 match with ichoicebd.com."
+  "changelog": "Release v1.0.35 - Single full-width '🛍️ অর্ডার করুন' button on homepage & archive cards (1:1 match with ichoicebd.com), zero hook removals."
 }

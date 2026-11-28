@@ -70,11 +70,9 @@ add_action( 'woocommerce_after_shop_loop_item', 'swift_woo_loop_actions_open', 8
  */
 if ( ! function_exists( 'swift_woo_add_loop_buy_now' ) ) {
 	function swift_woo_add_loop_buy_now() {
-		global $product;
-		if ( ! $product ) {
-			return;
-		}
-		swift_woo_order_now_button( $product );
+		// Single button mode on shop/home cards (ichoicebd.com style).
+		// Official woocommerce_template_loop_add_to_cart handles the primary "🛍️ অর্ডার করুন" action.
+		return;
 	}
 }
 add_action( 'woocommerce_after_shop_loop_item', 'swift_woo_add_loop_buy_now', 15 );

@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.34' );
+define( 'SWIFT_WOO_VERSION', '1.0.35' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -327,6 +327,53 @@ if ( ! function_exists( 'swift_woo_buy_now' ) ) {
 }
 add_action( 'wp_ajax_swift_woo_buy_now', 'swift_woo_buy_now' );
 add_action( 'wp_ajax_nopriv_swift_woo_buy_now', 'swift_woo_buy_now' );
+
+/**
+ * Single full-width "🛍️ অর্ডার করুন" button on homepage & archive cards (ichoicebd.com style)
+ * Uses standard WooCommerce official filter — zero hook removals.
+ */
+if ( ! function_exists( 'swift_woo_custom_loop_add_to_cart_link' ) ) {
+	function swift_woo_custom_loop_add_to_cart_link( $html, $product, $args = array() ) {
+		if ( ! $product ) {
+			return $html;
+		}
+
+		$btn_text = '<span class="swift-btn-icon">🛍️</span> <span class="swift-btn-text">' . esc_html__( 'অর্ডার করুন', 'swift-woo' ) . '</span>';
+
+		if ( $product->is_type( 'variable' ) ) {
+			return sprintf(
+				'<a href="%s" class="button alt swift-loop-order-btn swift-variable-order-btn" data-product_id="%s" aria-label="%s">%s</a>',
+				esc_url( $product->get_permalink() ),
+				esc_attr( $product->get_id() ),
+				esc_attr( $product->get_name() ),
+				$btn_text
+			);
+		}
+
+		$url = $product->is_purchasable() && $product->is_in_stock()
+			? esc_url( add_query_arg( array( 'add-to-cart' => $product->get_id(), 'swift_buy_now' => '1' ), wc_get_checkout_url() ) )
+			: esc_url( $product->get_permalink() );
+
+		return sprintf(
+			'<a href="%s" data-quantity="1" class="button alt swift-loop-order-btn swift-simple-order-btn product_type_simple" data-product_id="%s" aria-label="%s">%s</a>',
+			$url,
+			esc_attr( $product->get_id() ),
+			esc_attr( $product->get_name() ),
+			$btn_text
+		);
+	}
+}
+add_filter( 'woocommerce_loop_add_to_cart_link', 'swift_woo_custom_loop_add_to_cart_link', 10, 3 );
+
+if ( ! function_exists( 'swift_woo_redirect_checkout_buy_now' ) ) {
+	function swift_woo_redirect_checkout_buy_now( $url ) {
+		if ( isset( $_REQUEST['swift_buy_now'] ) ) {
+			return wc_get_checkout_url();
+		}
+		return $url;
+	}
+}
+add_filter( 'woocommerce_add_to_cart_redirect', 'swift_woo_redirect_checkout_buy_now' );
 
 /* -----------------------------------------------------------------------
  * 9. MULTI-COLOR DATA — SAVE TO CART, CHECKOUT & ORDER

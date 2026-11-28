@@ -342,32 +342,37 @@ ul.products li.product .price del { color: var(--swift-text-muted); font-weight:
 ul.products li.product .price ins { text-decoration: none; }
 
 /* ==========================================================================
- * PRODUCT CARD BUTTONS: Left = Cart, Right = Order Now (Flexbox side-by-side)
+ * PRODUCT CARD BUTTON: Single full-width "🛍️ অর্ডার করুন" (ichoicebd.com style)
  * ========================================================================== */
 ul.products li.product .swift-card-actions {
 	display: flex !important;
 	flex-direction: row !important;
-	gap: 6px !important;
 	padding: 0 8px 10px !important;
 	margin-top: auto !important;
 	width: 100% !important;
 	box-sizing: border-box !important;
 }
 
-/* Base button reset for card */
+/* Single full-width card button */
 ul.products li.product .swift-card-actions a.button,
 ul.products li.product .swift-card-actions button.button,
 ul.products li.product .swift-card-actions .button,
+ul.products li.product .swift-card-actions .swift-loop-order-btn,
 ul.products li.product .swift-card-actions .swift-buy-now-btn {
-	flex: 1 1 50% !important;
+	flex: 1 1 100% !important;
+	width: 100% !important;
 	display: inline-flex !important;
 	align-items: center !important;
 	justify-content: center !important;
-	font-size: .78rem !important;
+	gap: 6px !important;
+	font-size: 14px !important;
 	font-weight: 700 !important;
-	padding: 8px 4px !important;
+	padding: 9px 8px !important;
+	min-height: 38px !important;
 	border-radius: var(--swift-radius) !important;
-	border: 1.5px solid var(--swift-primary) !important;
+	border: none !important;
+	background: var(--swift-primary) !important;
+	color: #ffffff !important;
 	cursor: pointer !important;
 	text-align: center !important;
 	line-height: 1.2 !important;
@@ -375,25 +380,15 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn {
 	box-sizing: border-box !important;
 	text-decoration: none !important;
 	white-space: nowrap !important;
+	box-shadow: 0 2px 6px rgba(229, 62, 62, 0.25) !important;
+	transition: all .2s ease !important;
 }
-
-/* Left button: Cart (White background, Red text) */
-ul.products li.product .swift-card-actions .button.add_to_cart_button,
-ul.products li.product .swift-card-actions a.button {
-	background: #ffffff !important;
-	color: var(--swift-primary) !important;
-}
-ul.products li.product .swift-card-actions a.button:hover {
-	background: var(--swift-bg-alt) !important;
-}
-
-/* Right button: Order Now (Solid Red background, White text) */
-ul.products li.product .swift-card-actions .swift-buy-now-btn {
-	background: var(--swift-primary) !important;
-	color: #ffffff !important;
-}
+ul.products li.product .swift-card-actions a.button:hover,
+ul.products li.product .swift-card-actions button.button:hover,
+ul.products li.product .swift-card-actions .swift-loop-order-btn:hover,
 ul.products li.product .swift-card-actions .swift-buy-now-btn:hover {
-	background: var(--swift-primary-dark) !important;
+	background: var(--swift-primary-dark, #c53030) !important;
+	box-shadow: 0 4px 10px rgba(229, 62, 62, 0.35) !important;
 }
 
 /* ==========================================================================
