@@ -1,8 +1,8 @@
 {
-  "version": "1.0.32",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.32.zip",
+  "version": "1.0.33",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.33.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.32 - Exact 1:1 match with ichoicebd.com: Clean pill buttons with top-right circular checkmark badge, single-color row with inline amber hint banner for 2/3 pcs multi-color toggle, stacked green Order Now button on top, zero hook removal."
+  "changelog": "Release v1.0.33 - Perfected button dimensions: Fixed button heights (48px green Order Now on top, 46px Add to Cart on bottom) with zero stretching, complete ichoicebd 1:1 match."
 }
