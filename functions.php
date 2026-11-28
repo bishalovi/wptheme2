@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.25' );
+define( 'SWIFT_WOO_VERSION', '1.0.26' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -701,6 +701,9 @@ add_filter( 'woocommerce_product_single_add_to_cart_text', function() {
 add_filter( 'woocommerce_product_add_to_cart_text', function() {
 	return esc_html__( 'কার্টে যোগ করুন', 'swift-woo' );
 } );
+
+// Suppress "has been added to your cart" notice on single product page
+add_filter( 'wc_add_to_cart_message_html', '__return_false', 10 );
 
 /* -----------------------------------------------------------------------
  * 15. AUTO-FALLBACK GUTENBERG BLOCKS TO CLASSIC WOOCOMMERCE TEMPLATES

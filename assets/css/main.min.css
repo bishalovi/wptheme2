@@ -935,6 +935,7 @@ form.woocommerce-checkout > p:empty,
 .woocommerce-shipping-destination,
 .woocommerce-privacy-policy-text,
 .woocommerce-terms-and-conditions-wrapper,
+.single-product .woocommerce-notices-wrapper .woocommerce-message,
 #payment ul.payment_methods {
 	display: none !important;
 }
