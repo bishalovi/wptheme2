@@ -358,9 +358,7 @@ ul.products li.product .swift-card-actions .swift-buy-now-btn {
 }
 
 /* Single full-width card button (compact 35px height, leaves photo big!) */
-ul.products li.product .swift-card-actions a.button,
-ul.products li.product .swift-card-actions button.button,
-ul.products li.product .swift-card-actions .button,
+ul.products li.product .swift-card-actions a.button:not(.swift-buy-now-btn),
 ul.products li.product .swift-card-actions .swift-loop-order-btn {
 	display: flex !important;
 	width: 100% !important;
@@ -388,11 +386,27 @@ ul.products li.product .swift-card-actions .swift-loop-order-btn {
 	box-shadow: 0 2px 5px rgba(229, 62, 62, 0.22) !important;
 	transition: all .2s ease !important;
 }
-ul.products li.product .swift-card-actions a.button:hover,
-ul.products li.product .swift-card-actions button.button:hover,
+ul.products li.product .swift-card-actions a.button:not(.swift-buy-now-btn):hover,
 ul.products li.product .swift-card-actions .swift-loop-order-btn:hover {
 	background: var(--swift-primary-dark, #c53030) !important;
 	box-shadow: 0 4px 10px rgba(229, 62, 62, 0.35) !important;
+}
+
+/* Ensure Buy Now button in loop card is 100% hidden under all conditions */
+ul.products li.product .swift-card-actions .swift-buy-now-btn,
+ul.products li.product .swift-card-actions button.swift-buy-now-btn,
+ul.products li.product .swift-card-actions .button.swift-buy-now-btn {
+	display: none !important;
+	visibility: hidden !important;
+	height: 0 !important;
+	min-height: 0 !important;
+	max-height: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	border: none !important;
+	overflow: hidden !important;
+	opacity: 0 !important;
+	pointer-events: none !important;
 }
 
 /* Global Twemoji / WP Smiley Strict Restraint (Never blow up anywhere) */

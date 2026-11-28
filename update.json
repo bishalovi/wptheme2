@@ -1,8 +1,8 @@
 {
-  "version": "1.0.41",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.41.zip",
+  "version": "1.0.42",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.42.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.41 - Guaranteed side-by-side product page buttons on both simple and variable products, zero stacking/wrapping, zero hook removals."
+  "changelog": "Release v1.0.42 - Guarantee strictly single order button on home/archive cards, eliminate cached duplicate button, zero hook removals."
 }
