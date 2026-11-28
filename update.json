@@ -1,8 +1,8 @@
 {
-  "version": "1.0.35",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.35.zip",
+  "version": "1.0.36",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.36.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.35 - Single full-width '🛍️ অর্ডার করুন' button on homepage & archive cards (1:1 match with ichoicebd.com), zero hook removals."
+  "changelog": "Release v1.0.36 - Replace emoji with inline SVG icon to prevent WordPress Twemoji expansion, fix card button height (38px fixed)."
 }
