@@ -1,8 +1,8 @@
 {
-  "version": "1.0.27",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.27.zip",
+  "version": "1.0.28",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.28.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.27 - Fixed homepage product card title and price visibility, matched delivery info text to 130৳, live sync cart count on checkout stepper, and hidden redundant checkout page title."
+  "changelog": "Release v1.0.28 - Full speed optimization with resource hints and Google Fonts preconnect, Schema.org JSON-LD structured data for rich snippets, and complete domain-agnostic portability for seamless multi-store deployment."
 }

@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.27' );
+define( 'SWIFT_WOO_VERSION', '1.0.28' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -53,12 +53,12 @@ if ( ! function_exists( 'swift_woo_enqueue' ) ) {
 			SWIFT_WOO_VERSION
 		);
 
-		// Local fonts
+		// Google Fonts (Hind Siliguri & Inter) directly with display=swap for high speed
 		wp_enqueue_style(
 			'swift-woo-fonts',
-			SWIFT_WOO_URI . '/assets/fonts/fonts.css',
+			'https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;700;800&display=swap',
 			array(),
-			SWIFT_WOO_VERSION
+			null
 		);
 
 		// WooCommerce block styles
@@ -97,17 +97,41 @@ if ( ! function_exists( 'swift_woo_enqueue' ) ) {
 			);
 		}
 
-		// Pass AJAX URL and nonce to JS
+		// Pass AJAX URL and nonce to JS (100% dynamic to active domain)
 		wp_localize_script( 'swift-woo-main', 'swiftWoo', array(
 			'ajaxUrl'     => esc_url( admin_url( 'admin-ajax.php' ) ),
 			'nonce'       => wp_create_nonce( 'swift_woo_nonce' ),
 			'cartUrl'     => esc_url( swift_woo_get_wc_url( 'cart' ) ),
 			'checkoutUrl' => esc_url( swift_woo_get_wc_url( 'checkout' ) ),
+			'siteUrl'     => esc_url( home_url( '/' ) ),
 			'whatsapp'    => esc_attr( get_theme_mod( 'swift_whatsapp', '' ) ),
 		) );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'swift_woo_enqueue' );
+
+/* -----------------------------------------------------------------------
+ * 3b. RESOURCE HINTS (Speed Optimization: DNS-Prefetch & Preconnect)
+ * --------------------------------------------------------------------- */
+if ( ! function_exists( 'swift_woo_resource_hints' ) ) {
+	function swift_woo_resource_hints( $urls, $relation_type ) {
+		if ( 'preconnect' === $relation_type ) {
+			$urls[] = array(
+				'href' => 'https://fonts.googleapis.com',
+			);
+			$urls[] = array(
+				'href'        => 'https://fonts.gstatic.com',
+				'crossorigin' => 'anonymous',
+			);
+		}
+		if ( 'dns-prefetch' === $relation_type ) {
+			$urls[] = 'https://fonts.googleapis.com';
+			$urls[] = 'https://fonts.gstatic.com';
+		}
+		return $urls;
+	}
+}
+add_filter( 'wp_resource_hints', 'swift_woo_resource_hints', 10, 2 );
 
 /* -----------------------------------------------------------------------
  * 4. CUSTOMIZER OPTIONS
@@ -371,46 +395,101 @@ if ( ! function_exists( 'swift_woo_validate_bd_phone' ) ) {
 add_action( 'woocommerce_checkout_process', 'swift_woo_validate_bd_phone' );
 
 /* -----------------------------------------------------------------------
- * 11. SEO & OPEN GRAPH META TAGS (Single Product)
- *     Outputs rich social/CAPI previews — purely additive
+ * 11. SEO & OPEN GRAPH META TAGS & SCHEMA.ORG JSON-LD STRUCTURED DATA
+ *     Outputs rich social/CAPI previews & Google rich search snippets — purely additive
  * --------------------------------------------------------------------- */
 if ( ! function_exists( 'swift_woo_seo_meta' ) ) {
 	function swift_woo_seo_meta() {
-		if ( ! is_product() ) {
-			return;
-		}
-		global $post;
-		$product = wc_get_product( $post->ID );
-		if ( ! $product ) {
-			return;
-		}
+		$site_name = esc_attr( get_bloginfo( 'name' ) );
+		$site_desc = esc_attr( get_bloginfo( 'description' ) );
+		$site_url  = esc_url( home_url( '/' ) );
 
-		$title       = esc_attr( $product->get_name() );
-		$short_desc  = $product->get_short_description();
-		$description = esc_attr( wp_strip_all_tags( $short_desc ? $short_desc : $product->get_name() ) );
-		$url         = esc_url( get_permalink() );
-		$price       = esc_attr( $product->get_price() );
-		$currency    = esc_attr( get_woocommerce_currency() );
+		if ( is_product() ) {
+			global $post;
+			$product = wc_get_product( $post->ID );
+			if ( ! $product ) {
+				return;
+			}
 
-		echo '<meta property="og:type" content="product" />' . "\n";
-		echo '<meta property="og:title" content="' . $title . '" />' . "\n";
-		echo '<meta property="og:description" content="' . $description . '" />' . "\n";
-		echo '<meta property="og:url" content="' . $url . '" />' . "\n";
+			$title       = esc_attr( $product->get_name() );
+			$short_desc  = $product->get_short_description();
+			$description = esc_attr( wp_strip_all_tags( $short_desc ? $short_desc : $product->get_name() ) );
+			$url         = esc_url( get_permalink() );
+			$price       = esc_attr( $product->get_price() );
+			$currency    = esc_attr( get_woocommerce_currency() );
+			$stock       = $product->is_in_stock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
 
-		$img_id = $product->get_image_id();
-		if ( $img_id ) {
-			$img_url = wp_get_attachment_image_url( $img_id, 'full' );
+			echo '<meta property="og:site_name" content="' . $site_name . '" />' . "\n";
+			echo '<meta property="og:type" content="product" />' . "\n";
+			echo '<meta property="og:title" content="' . $title . '" />' . "\n";
+			echo '<meta property="og:description" content="' . $description . '" />' . "\n";
+			echo '<meta property="og:url" content="' . $url . '" />' . "\n";
+
+			$img_id  = $product->get_image_id();
+			$img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'full' ) : '';
 			if ( $img_url ) {
 				echo '<meta property="og:image" content="' . esc_url( $img_url ) . '" />' . "\n";
 			}
-		}
 
-		if ( $price ) {
-			echo '<meta property="product:price:amount" content="' . $price . '" />' . "\n";
-			echo '<meta property="product:price:currency" content="' . $currency . '" />' . "\n";
+			if ( $price ) {
+				echo '<meta property="product:price:amount" content="' . $price . '" />' . "\n";
+				echo '<meta property="product:price:currency" content="' . $currency . '" />' . "\n";
+			}
+			echo '<meta property="product:availability" content="' . ( $product->is_in_stock() ? 'in stock' : 'out of stock' ) . '" />' . "\n";
+			echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
+			echo '<meta name="twitter:title" content="' . $title . '" />' . "\n";
+			echo '<meta name="twitter:description" content="' . $description . '" />' . "\n";
+			if ( $img_url ) {
+				echo '<meta name="twitter:image" content="' . esc_url( $img_url ) . '" />' . "\n";
+			}
+
+			// Schema.org JSON-LD Structured Data for Product
+			$schema = array(
+				'@context'    => 'https://schema.org/',
+				'@type'       => 'Product',
+				'name'        => $product->get_name(),
+				'description' => $description,
+				'url'         => $url,
+				'sku'         => $product->get_sku() ? $product->get_sku() : (string) $product->get_id(),
+				'offers'      => array(
+					'@type'         => 'Offer',
+					'url'           => $url,
+					'priceCurrency' => $currency ? $currency : 'BDT',
+					'price'         => $price ? $price : '0',
+					'availability'  => $stock,
+					'seller'        => array(
+						'@type' => 'Organization',
+						'name'  => $site_name,
+					),
+				),
+			);
+			if ( $img_url ) {
+				$schema['image'] = esc_url( $img_url );
+			}
+			echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+
+		} elseif ( is_front_page() || is_home() ) {
+			echo '<meta property="og:site_name" content="' . $site_name . '" />' . "\n";
+			echo '<meta property="og:type" content="website" />' . "\n";
+			echo '<meta property="og:title" content="' . $site_name . '" />' . "\n";
+			echo '<meta property="og:description" content="' . ( $site_desc ? $site_desc : $site_name ) . '" />' . "\n";
+			echo '<meta property="og:url" content="' . $site_url . '" />' . "\n";
+			echo '<meta name="twitter:card" content="summary" />' . "\n";
+
+			// Schema.org WebSite & SearchAction Schema
+			$schema = array(
+				'@context'        => 'https://schema.org',
+				'@type'           => 'WebSite',
+				'name'            => $site_name,
+				'url'             => $site_url,
+				'potentialAction' => array(
+					'@type'       => 'SearchAction',
+					'target'      => $site_url . '?s={search_term_string}&post_type=product',
+					'query-input' => 'required name=search_term_string',
+				),
+			);
+			echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
 		}
-		echo '<meta property="product:availability" content="' . ( $product->is_in_stock() ? 'in stock' : 'out of stock' ) . '" />' . "\n";
-		echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
 	}
 }
 add_action( 'wp_head', 'swift_woo_seo_meta', 5 );
