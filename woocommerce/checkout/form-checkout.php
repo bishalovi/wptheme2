@@ -33,6 +33,11 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 			<?php do_action( 'woocommerce_checkout_before_customer_details' ); ?>
 
 			<div class="col2-set" id="customer_details">
+				<div class="swift-box-header">
+					<span class="swift-step-number">১</span>
+					<h3 class="swift-box-title"><?php esc_html_e( 'কাস্টমার ইনফরমেশন', 'swift-woo' ); ?></h3>
+				</div>
+
 				<div class="col-1">
 					<?php do_action( 'woocommerce_checkout_billing' ); ?>
 				</div>
@@ -53,6 +58,10 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 		<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
 
 		<div id="order_review" class="woocommerce-checkout-review-order">
+			<div class="swift-box-header">
+				<span class="swift-step-number">২</span>
+				<h3 class="swift-box-title"><?php esc_html_e( 'আপনার অর্ডার বিবরণী', 'swift-woo' ); ?></h3>
+			</div>
 			<?php do_action( 'woocommerce_checkout_order_review' ); ?>
 		</div>
 

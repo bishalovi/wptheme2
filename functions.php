@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.23' );
+define( 'SWIFT_WOO_VERSION', '1.0.24' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -468,7 +468,35 @@ if ( ! function_exists( 'swift_woo_customize_checkout_fields' ) ) {
 		return $fields;
 	}
 }
-add_filter( 'woocommerce_checkout_fields', 'swift_woo_customize_checkout_fields', 20 );
+add_filter( 'woocommerce_checkout_fields', 'swift_woo_customize_checkout_fields', 999 );
+
+if ( ! function_exists( 'swift_woo_customize_billing_fields' ) ) {
+	function swift_woo_customize_billing_fields( $fields ) {
+		if ( isset( $fields['billing_first_name'] ) ) {
+			$fields['billing_first_name']['label']       = __( 'আপনার সম্পূর্ণ নাম', 'swift-woo' );
+			$fields['billing_first_name']['placeholder'] = __( 'আপনার নাম লিখুন', 'swift-woo' );
+			$fields['billing_first_name']['required']    = true;
+		}
+		if ( isset( $fields['billing_phone'] ) ) {
+			$fields['billing_phone']['label']       = __( 'মোবাইল নাম্বার', 'swift-woo' );
+			$fields['billing_phone']['placeholder'] = __( '১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 01XXXXXXXXX)', 'swift-woo' );
+			$fields['billing_phone']['required']    = true;
+		}
+		if ( isset( $fields['billing_address_1'] ) ) {
+			$fields['billing_address_1']['label']       = __( 'সম্পূর্ণ ডেলিভারি ঠিকানা', 'swift-woo' );
+			$fields['billing_address_1']['placeholder'] = __( 'বাসা/রোড নং, এলাকা/থানা এবং জেলার নাম লিখুন', 'swift-woo' );
+			$fields['billing_address_1']['required']    = true;
+		}
+		$optional = array( 'billing_last_name', 'billing_company', 'billing_country', 'billing_city', 'billing_state', 'billing_postcode', 'billing_address_2', 'billing_email' );
+		foreach ( $optional as $k ) {
+			if ( isset( $fields[ $k ] ) ) {
+				$fields[ $k ]['required'] = false;
+			}
+		}
+		return $fields;
+	}
+}
+add_filter( 'woocommerce_billing_fields', 'swift_woo_customize_billing_fields', 999 );
 
 // Default country to Bangladesh & default city to Dhaka
 add_filter( 'default_checkout_billing_country', function() { return 'BD'; } );
@@ -506,24 +534,24 @@ if ( ! function_exists( 'swift_woo_render_delivery_area_selector' ) ) {
 		$current_area = WC()->session ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
 		?>
 		<div class="swift-delivery-area-box" id="swift-delivery-area-box">
-			<label class="swift-area-box-title">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+			<div class="swift-area-box-title">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
 				<span><?php esc_html_e( 'ডেলিভারি এরিয়া বেছে নিন *', 'swift-woo' ); ?></span>
-			</label>
+			</div>
 			<div class="swift-area-options">
 				<label class="swift-area-option <?php echo ( $current_area === 'inside_dhaka' ) ? 'is-selected' : ''; ?>" data-rate-id="<?php echo esc_attr( $inside_rate_id ); ?>">
 					<input type="radio" name="swift_delivery_area" value="inside_dhaka" data-rate-id="<?php echo esc_attr( $inside_rate_id ); ?>" <?php checked( $current_area, 'inside_dhaka' ); ?>>
-					<div class="swift-area-option__body">
+					<span class="swift-area-option__body">
 						<span class="swift-area-option__name"><?php echo esc_html( $inside_label ); ?></span>
 						<span class="swift-area-option__price"><?php echo esc_html( $inside_price ); ?></span>
-					</div>
+					</span>
 				</label>
 				<label class="swift-area-option <?php echo ( $current_area === 'outside_dhaka' ) ? 'is-selected' : ''; ?>" data-rate-id="<?php echo esc_attr( $outside_rate_id ); ?>">
 					<input type="radio" name="swift_delivery_area" value="outside_dhaka" data-rate-id="<?php echo esc_attr( $outside_rate_id ); ?>" <?php checked( $current_area, 'outside_dhaka' ); ?>>
-					<div class="swift-area-option__body">
+					<span class="swift-area-option__body">
 						<span class="swift-area-option__name"><?php echo esc_html( $outside_label ); ?></span>
 						<span class="swift-area-option__price"><?php echo esc_html( $outside_price ); ?></span>
-					</div>
+					</span>
 				</label>
 			</div>
 		</div>
@@ -687,14 +715,16 @@ if ( ! function_exists( 'swift_woo_classic_checkout_fallback' ) ) {
 }
 add_filter( 'the_content', 'swift_woo_classic_checkout_fallback', 20 );
 
-// Translate Subtotal and Total to Bengali on Checkout & Cart
+// Translate Subtotal, Total, and English checkout labels to Bengali
 add_filter( 'gettext', function( $translated, $text, $domain ) {
 	if ( function_exists( 'is_checkout' ) && ( is_checkout() || is_cart() ) ) {
 		if ( 'Subtotal' === $text ) return 'মোট পণ্য মূল্য';
 		if ( 'Total' === $text ) return 'সর্বমোট';
+		if ( 'Street address' === $text ) return 'সম্পূর্ণ ডেলিভারি ঠিকানা';
+		if ( 'Phone' === $text || 'Phone (optional)' === $text ) return 'মোবাইল নাম্বার';
 	}
 	return $translated;
-}, 10, 3 );
+}, 20, 3 );
 
 /* -----------------------------------------------------------------------
  * 16. INCLUDE MODULES

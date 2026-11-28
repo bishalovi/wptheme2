@@ -837,22 +837,32 @@ form.woocommerce-checkout {
 	display: block;
 }
 
+form.woocommerce-checkout > p:empty,
+.swift-checkout-container > p:empty {
+	display: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+#order_review_heading {
+	display: none !important;
+}
+
 @media (min-width: 768px) {
 	form.woocommerce-checkout {
 		display: grid !important;
 		grid-template-columns: 1.05fr 0.95fr !important;
-		gap: 10px !important;
+		gap: 12px !important;
 		align-items: start !important;
 	}
 	form.woocommerce-checkout .col2-set#customer_details {
 		grid-column: 1 !important;
+		grid-row: 1 !important;
 		margin: 0 !important;
-	}
-	form.woocommerce-checkout #order_review_heading {
-		display: none !important;
 	}
 	form.woocommerce-checkout #order_review {
 		grid-column: 2 !important;
+		grid-row: 1 !important;
 		margin: 0 !important;
 	}
 }
@@ -873,15 +883,6 @@ form.woocommerce-checkout {
 	width: 100% !important;
 	margin: 0 !important;
 	padding: 0 !important;
-}
-
-#order_review_heading {
-	font-size: .86rem !important;
-	font-weight: 700 !important;
-	color: var(--swift-text) !important;
-	margin: 0 0 4px !important;
-	padding-bottom: 3px !important;
-	border-bottom: 1px solid var(--swift-border) !important;
 }
 
 .swift-box-header {

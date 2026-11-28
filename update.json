@@ -1,8 +1,8 @@
 {
-  "version": "1.0.23",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.23.zip",
+  "version": "1.0.24",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.24.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.23 - Ultra-compact 1-screen checkout layout, dynamic delivery area selection (inside 70 / outside 130), inline [+] and [-] AJAX quantity stepper on checkout order review table, clean shipping row display without duplicate radios."
+  "changelog": "Release v1.0.24 - Fixed desktop 2-column grid alignment with grid-row:1, added 1 and 2 step badge headers, valid W3C phrasing inside delivery area labels, Bengali translation fallback for English billing labels, and AJAX quantity stepper."
 }
