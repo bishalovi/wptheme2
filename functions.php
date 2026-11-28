@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'SWIFT_WOO_VERSION', '1.0.21' );
+define( 'SWIFT_WOO_VERSION', '1.0.22' );
 define( 'SWIFT_WOO_DIR', get_template_directory() );
 define( 'SWIFT_WOO_URI', get_template_directory_uri() );
 
@@ -480,6 +480,12 @@ add_filter( 'default_checkout_billing_state', function() { return 'BD-13'; } );
  * --------------------------------------------------------------------- */
 if ( ! function_exists( 'swift_woo_render_delivery_area_selector' ) ) {
 	function swift_woo_render_delivery_area_selector( $checkout ) {
+		// If WooCommerce core shipping methods are configured, do not render duplicate selector
+		$packages = ( function_exists( 'WC' ) && WC()->shipping() ) ? WC()->shipping()->get_packages() : array();
+		if ( ! empty( $packages ) && ! empty( $packages[0]['rates'] ) ) {
+			return;
+		}
+
 		$current_area = WC()->session ? WC()->session->get( 'swift_delivery_area', 'inside_dhaka' ) : 'inside_dhaka';
 		?>
 		<div class="swift-delivery-area-box" id="swift-delivery-area-box">
@@ -618,7 +624,16 @@ if ( ! function_exists( 'swift_woo_classic_checkout_fallback' ) ) {
 		return $content;
 	}
 }
-add_filter( 'the_content', 'swift_woo_classic_checkout_fallback', 5 );
+add_filter( 'the_content', 'swift_woo_classic_checkout_fallback', 20 );
+
+// Translate Subtotal and Total to Bengali on Checkout & Cart
+add_filter( 'gettext', function( $translated, $text, $domain ) {
+	if ( function_exists( 'is_checkout' ) && ( is_checkout() || is_cart() ) ) {
+		if ( 'Subtotal' === $text ) return 'মোট পণ্য মূল্য';
+		if ( 'Total' === $text ) return 'সর্বমোট';
+	}
+	return $translated;
+}, 10, 3 );
 
 /* -----------------------------------------------------------------------
  * 16. INCLUDE MODULES

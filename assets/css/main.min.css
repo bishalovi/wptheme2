@@ -931,11 +931,61 @@ form.woocommerce-checkout {
 .shipping_address,
 .woocommerce-checkout-review-order-table thead,
 .swift-review-order-table thead,
-#shipping_method,
-.woocommerce-shipping-methods,
 .woocommerce-shipping-destination,
 #payment ul.payment_methods {
 	display: none !important;
+}
+
+/* WooCommerce Shipping Methods — GrihoTools Radio Cards */
+ul#shipping_method,
+.woocommerce-shipping-methods {
+	list-style: none !important;
+	margin: 4px 0 !important;
+	padding: 0 !important;
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 6px !important;
+}
+ul#shipping_method li,
+.woocommerce-shipping-methods li {
+	display: flex !important;
+	align-items: center !important;
+	gap: 8px !important;
+	padding: 6px 10px !important;
+	background: #f8fafc !important;
+	border: 1.5px solid #e2e8f0 !important;
+	border-radius: 6px !important;
+	cursor: pointer !important;
+	font-size: 13px !important;
+	font-weight: 600 !important;
+	color: var(--swift-text) !important;
+	transition: border-color .2s, background-color .2s !important;
+	margin: 0 !important;
+}
+ul#shipping_method li:has(input:checked),
+.woocommerce-shipping-methods li:has(input:checked) {
+	border-color: var(--swift-primary) !important;
+	background: #fff5f5 !important;
+}
+ul#shipping_method li label,
+.woocommerce-shipping-methods li label {
+	margin: 0 !important;
+	cursor: pointer !important;
+	display: flex !important;
+	align-items: center !important;
+	gap: 6px !important;
+	font-size: 13px !important;
+	font-weight: 700 !important;
+	color: var(--swift-text) !important;
+}
+ul#shipping_method input[type="radio"],
+.woocommerce-shipping-methods input[type="radio"] {
+	margin: 0 !important;
+	accent-color: var(--swift-primary) !important;
+	cursor: pointer !important;
+	width: 16px !important;
+	height: 16px !important;
+	flex-shrink: 0 !important;
 }
 
 /* Essential 3 input fields - ultra compact */
@@ -961,8 +1011,8 @@ form.woocommerce-checkout {
 	border: 1.5px solid #cbd5e0 !important;
 	border-radius: 6px !important;
 	padding: 5px 8px !important;
-	font-size: 13.5px !important;
-	height: 36px !important;
+	font-size: 16px !important; /* iOS no-zoom */
+	height: 38px !important;
 	width: 100% !important;
 	background: #ffffff !important;
 	transition: border-color .2s, box-shadow .2s;

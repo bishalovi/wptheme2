@@ -1,8 +1,8 @@
 {
-  "version": "1.0.21",
-  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.21.zip",
+  "version": "1.0.22",
+  "download_url": "https://github.com/bishalovi/wptheme2/archive/refs/tags/v1.0.22.zip",
   "details_url": "https://github.com/bishalovi/wptheme2/releases",
   "tested": "6.7",
   "requires_php": "8.2",
-  "changelog": "Release v1.0.21 - Auto-fallback Gutenberg Cart & Checkout Blocks to classic WooCommerce templates, fixed 404 font errors with Google Fonts CDN, resolved iOS safe-area-inset overlap, and conditional mobile bottom navigation."
+  "changelog": "Release v1.0.22 - Fixed shipping double display and unhidden WooCommerce shipping methods as GrihoTools radio cards, fixed wpautop injecting p tags into checkout tables, added Bengali translations for Subtotal and Total, prevented iOS input auto-zoom, and added real-time cart badge synchronization."
 }
